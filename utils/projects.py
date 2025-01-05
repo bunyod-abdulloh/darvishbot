@@ -52,12 +52,12 @@ async def send_media(call: types.CallbackQuery, items, markup):
     caption = items[0]['caption']
     try:
         if items[0]['file_type'] == "audio":
-            await call.message.answer_audio(
-                audio=media, caption=caption, reply_markup=markup
+            await call.message.edit_media(
+                media=types.InputMediaAudio(media=media, caption=caption), reply_markup=markup
             )
         elif items[0]['file_type'] == "video":
-            await call.message.answer_video(
-                video=media, caption=caption, reply_markup=markup
+            await call.message.edit_media(
+                media=types.InputMediaVideo(media=media, caption=caption), reply_markup=markup
             )
     except Exception as e:
         await call.answer(text=f"Xatolik yuz berdi: {e}", show_alert=True)
