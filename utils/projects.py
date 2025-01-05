@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import types
 
 from data.config import ADMINS
@@ -16,7 +18,7 @@ async def send_projects_page(extract, current_page, all_pages, call: types.Callb
                              message: types.Message = None):
     """Show projects in a specific page."""
     items = extract[current_page - 1]
-    await bot.send_message(chat_id=ADMINS[0], text=f"{items}")
+    logging.info(items)
     projects = "\n".join(f"{n['rank']}. {n['category']}" for n in items)
     markup = key_returner_projects(items=items, current_page=current_page, all_pages=all_pages)
 
