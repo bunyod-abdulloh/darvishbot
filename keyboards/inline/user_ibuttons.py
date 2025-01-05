@@ -63,7 +63,7 @@ def key_returner_articles(current_page, all_pages):
 def key_returner_projects(items, current_page, all_pages):
     keys = InlineKeyboardMarkup(row_width=5)
     for item in items:
-        keys.add(
+        keys.insert(
             InlineKeyboardButton(
                 text=f"{item['rank']}",
                 callback_data=f"projects:{item['id']}"
@@ -90,7 +90,7 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
     builder = InlineKeyboardMarkup(row_width=5)
     for item in items:
         if selected == item['sequence']:
-            builder.add(
+            builder.insert(
                 InlineKeyboardButton(
                     text=f"[ {item['sequence']} ]",
                     callback_data=f"select_projects:{item['id']}:{current_page}"

@@ -12,8 +12,8 @@ async def interviews_projects_hr_one(message: types.Message):
     if extract:
         current_page = 1
         all_pages = len(extract)
-        await send_projects_page(extract=extract, current_page=current_page, all_pages=all_pages, message=message)
         await message.answer(text=message.text, reply_markup=interviews_cbuttons)
+        await send_projects_page(extract=extract, current_page=current_page, all_pages=all_pages, message=message)
     else:
         await message.answer(text="Hozircha suhbat va loyihalar bo'limi ishga tushmadi!")
 

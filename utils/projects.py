@@ -1,10 +1,7 @@
-import logging
-
 from aiogram import types
 
-from data.config import ADMINS
 from keyboards.inline.user_ibuttons import key_returner_projects, interviews_first_ibuttons
-from loader import db, bot
+from loader import db
 from utils.all_functions import extracter
 
 
@@ -18,7 +15,6 @@ async def send_projects_page(extract, current_page, all_pages, call: types.Callb
                              message: types.Message = None):
     """Show projects in a specific page."""
     items = extract[current_page - 1]
-    logging.info(items)
     projects = "\n".join(f"{n['rank']}. {n['category']}" for n in items)
     markup = key_returner_projects(items=items, current_page=current_page, all_pages=all_pages)
 
@@ -71,7 +67,7 @@ async def fetch_and_handle_page(call: types.CallbackQuery, category_id=None, cur
     """General method to fetch category and handle page change."""
     # Fetch category data based on category_id or category name
     if category_id:
-        get_category = await db.select_project_name(id_=category_id)
+        get_category = await db.select_project_by_id(id_=category_id)
         select_category = await db.select_project_by_categories(category_name=get_category['category'])
     else:
         select_category = await db.select_project_by_categories(category_name=category_id)

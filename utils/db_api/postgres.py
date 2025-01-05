@@ -241,9 +241,12 @@ class Database:
 
     async def select_projects(self):
         sql = """
-        SELECT DISTINCT ON (category) row_number() OVER () AS rank, category, id
-        FROM medialar_table9
-        ORDER BY category, id ASC;
+        SELECT row_number() OVER () AS rank, category, id
+        FROM (
+            SELECT DISTINCT ON (category) category, id
+            FROM medialar_table9
+            ORDER BY category, id ASC
+        ) subquery
         """
         return await self.execute(sql, fetch=True)
 
