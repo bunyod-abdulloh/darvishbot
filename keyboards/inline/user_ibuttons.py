@@ -97,7 +97,7 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
                 )
             )
         else:
-            builder.add(
+            builder.insert(
                 InlineKeyboardButton(
                     text=f"{item['sequence']}",
                     callback_data=f"select_pts:{item['id']}:{current_page}"
