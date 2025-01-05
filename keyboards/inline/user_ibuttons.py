@@ -7,38 +7,38 @@ inline_keyboard = [[
 are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def key_returner_selected(items, table_name, current_page, all_pages, selected):
-    keys = InlineKeyboardMarkup(row_width=5)
-    for item in items:
-        if selected == item['lesson_number']:
-            keys.add(
-                InlineKeyboardButton(
-                    text=f"[ {item['lesson_number']} ]",
-                    callback_data=f"id:{item['lesson_number']}:{current_page}:{table_name}"
-                )
-            )
-        else:
-            keys.add(
-                InlineKeyboardButton(
-                    text=f"{item['lesson_number']}",
-                    callback_data=f"id:{item['lesson_number']}:{current_page}:{table_name}"
-                )
-            )
-    keys.row(
-        InlineKeyboardButton(
-            text="◀️",
-            callback_data=f"prev:{current_page}:{table_name}"
-        ),
-        InlineKeyboardButton(
-            text=f"{current_page}/{all_pages}",
-            callback_data=f"alertmessage:{current_page}:{table_name}"
-        ),
-        InlineKeyboardButton(
-            text="▶️",
-            callback_data=f"next:{current_page}:{table_name}"
-        )
-    )
-    return keys
+# def key_returner_selected(items, table_name, current_page, all_pages, selected):
+#     keys = InlineKeyboardMarkup(row_width=5)
+#     for item in items:
+#         if selected == item['lesson_number']:
+#             keys.insert(
+#                 InlineKeyboardButton(
+#                     text=f"[ {item['lesson_number']} ]",
+#                     callback_data=f"id:{item['lesson_number']}:{current_page}:{table_name}"
+#                 )
+#             )
+#         else:
+#             keys.add(
+#                 InlineKeyboardButton(
+#                     text=f"{item['lesson_number']}",
+#                     callback_data=f"id:{item['lesson_number']}:{current_page}:{table_name}"
+#                 )
+#             )
+#     keys.row(
+#         InlineKeyboardButton(
+#             text="◀️",
+#             callback_data=f"prev:{current_page}:{table_name}"
+#         ),
+#         InlineKeyboardButton(
+#             text=f"{current_page}/{all_pages}",
+#             callback_data=f"alertmessage:{current_page}:{table_name}"
+#         ),
+#         InlineKeyboardButton(
+#             text="▶️",
+#             callback_data=f"next:{current_page}:{table_name}"
+#         )
+#     )
+#     return keys
 
 
 def key_returner_articles(current_page, all_pages):
