@@ -8,7 +8,7 @@ are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
 def key_returner_selected(items, table_name, current_page, all_pages, selected):
-    keys = InlineKeyboardMarkup()
+    keys = InlineKeyboardMarkup(row_width=5)
     for item in items:
         if selected == item['lesson_number']:
             keys.add(
@@ -38,7 +38,7 @@ def key_returner_selected(items, table_name, current_page, all_pages, selected):
             callback_data=f"next:{current_page}:{table_name}"
         )
     )
-    return keys.as_markup()
+    return keys
 
 
 def key_returner_articles(current_page, all_pages):
@@ -61,7 +61,7 @@ def key_returner_articles(current_page, all_pages):
 
 
 def key_returner_projects(items, current_page, all_pages):
-    keys = InlineKeyboardBuilder()
+    keys = InlineKeyboardMarkup(row_width=5)
     for item in items:
         keys.add(
             InlineKeyboardButton(
@@ -69,7 +69,6 @@ def key_returner_projects(items, current_page, all_pages):
                 callback_data=f"projects:{item['id']}"
             )
         )
-    keys.adjust(5)
     keys.row(
         InlineKeyboardButton(
             text="◀️",
@@ -84,11 +83,11 @@ def key_returner_projects(items, current_page, all_pages):
             callback_data=f"next_projects:{current_page}"
         )
     )
-    return keys.as_markup()
+    return keys
 
 
 def interviews_first_ibuttons(items, current_page, all_pages, selected):
-    builder = InlineKeyboardBuilder()
+    builder = InlineKeyboardMarkup(row_width=5)
     for item in items:
         if selected == item['sequence']:
             builder.add(
@@ -104,7 +103,6 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
                     callback_data=f"select_pts:{item['id']}:{current_page}"
                 )
             )
-    builder.adjust(5)
     builder.row(
         InlineKeyboardButton(
             text="◀️",
@@ -125,7 +123,7 @@ def interviews_first_ibuttons(items, current_page, all_pages, selected):
     #         callback_data=f"content_projects:{current_page}:{items[0]['id']}"
     #     )
     # )
-    return builder.as_markup()
+    return builder
 
 
 def test_link_ibutton(link):
