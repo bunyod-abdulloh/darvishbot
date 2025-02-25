@@ -8,7 +8,7 @@ from magic_filter import F
 from filters.admins import IsBotAdminFilter
 from keyboards.default.admin_buttons import admin_main_btns
 
-from loader import dp, db, adb
+from loader import dp, udb, adb
 from states.admin import AdminStates
 from utils.db_functions import send_message_to_users, send_media_group_to_users
 
@@ -27,7 +27,7 @@ async def admin_main_page(message: types.Message, state: FSMContext):
 
 @dp.message_handler(IsBotAdminFilter(), F.text == "Foydalanuvchilar soni")
 async def user_count(message: types.Message):
-    count = await db.count_users()
+    count = await udb.count_users()
     await message.answer(f"Foydalanuvchilar soni: {count}")
 
 
