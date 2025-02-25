@@ -169,55 +169,6 @@ class Database:
         for query in queries:
             await self.execute(query, execute=True)
 
-    # =========================== TABLE | USERS ===========================
-    async def add_user(self, telegram_id):
-        sql = "INSERT INTO users (telegram_id) VALUES($1)"
-        return await self.execute(sql, telegram_id, fetchrow=True)
-
-    async def add_user_json(self, full_name, username, telegram_id, fio, phone):
-        sql = "INSERT INTO users (full_name, username, telegram_id, fio, phone) VALUES($1, $2, $3, $4, $5)"
-        return await self.execute(sql, full_name, username, telegram_id, fio, phone, fetchrow=True)
-
-    async def updateuser_fullname(self, telegram_id, fio):
-        sql = f"UPDATE users SET fio='{fio}' WHERE telegram_id='{telegram_id}'"
-        return await self.execute(sql, execute=True)
-
-    async def updateuser_phone(self, telegram_id, phone):
-        sql = f"UPDATE users SET phone='{phone}' WHERE telegram_id='{telegram_id}'"
-        return await self.execute(sql, execute=True)
-
-    async def select_all_users(self):
-        sql = "SELECT * FROM users"
-        return await self.execute(sql, fetch=True)
-
-    async def select_user(self, telegram_id):
-        sql = f"SELECT * FROM users WHERE telegram_id='{telegram_id}'"
-        return await self.execute(sql, fetchrow=True)
-
-    async def count_users(self):
-        sql = "SELECT COUNT(*) FROM users"
-        return await self.execute(sql, fetchval=True)
-
-    async def delete_user(self, telegram_id):
-        await self.execute(f"DELETE FROM users WHERE telegram_id='{telegram_id}'", execute=True)
-
-    async def drop_table_users(self):
-        await self.execute("DROP TABLE users", execute=True)
-
-        # =========================== TABLE | SEND_STATUS ===========================
-
-    async def add_send_status(self):
-        sql = "INSERT INTO send_status (send_post) VALUES (false)"
-        return await self.execute(sql, fetchrow=True)
-
-    async def update_send_status(self, send_post):
-        sql = "UPDATE send_status SET send_post = $1"
-        return await self.execute(sql, send_post, execute=True)
-
-    async def get_send_status(self):
-        sql = "SELECT send_post FROM send_status"
-        return await self.execute(sql, fetchval=True)
-
     # =========================== TABLE | ARTICLES ===========================
     async def add_articles(self, file_name, link):
         sql = "INSERT INTO articles (file_name, link) VALUES($1, $2) RETURNING *"
