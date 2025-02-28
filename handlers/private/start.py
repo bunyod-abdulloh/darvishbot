@@ -5,7 +5,7 @@ from aiogram.dispatcher.filters.builtin import CommandStart
 from magic_filter import F
 
 from keyboards.default.user_buttons import main_dkb
-from loader import dp, db
+from loader import dp, udb
 
 
 @dp.message_handler(CommandStart(), state="*")
@@ -14,7 +14,7 @@ async def bot_start(message: types.Message, state: FSMContext):
                          reply_markup=main_dkb)
 
     try:
-        await db.add_user(telegram_id=message.from_user.id)
+        await udb.add_user(telegram_id=message.from_user.id)
     except asyncpg.exceptions.UniqueViolationError:
         pass
     except Exception as e:
