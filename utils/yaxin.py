@@ -45,7 +45,7 @@ async def calculate_and_send_results(call: types.CallbackQuery):
     )
 
     # Foydalanuvchi ma'lumotlarini olish
-    user = await db.select_user(telegram_id=call.from_user.id)
+    user = await udb.select_user(telegram_id=call.from_user.id)
     result_message = (
         f"Тест тури: Яхин, Менделевич | Невротик ҳолатни аниқлаш\n\n"
         f"Исм-шариф: {user['fio']}\nТелефон рақам: {user['phone']}\n\n"

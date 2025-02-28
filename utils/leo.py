@@ -20,7 +20,7 @@ async def leo_result(call: types.CallbackQuery):
         if scale_data:
             results[scale] = (scale_data['total_yes'] + scale_data['total_no']) * scale_multipliers[scale]
 
-    user = await db.select_user(telegram_id=call.from_user.id)
+    user = await udb.select_user(telegram_id=call.from_user.id)
     result_text = f"Сўровнома якунланди!\n\nТест тури: Леонгард | Характерологик сўровнома\n\n" \
                   f"Ф.И.О: {user['fio']}\n\nТелефон рақам: {user['phone']}\n\n"
 

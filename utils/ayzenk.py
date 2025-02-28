@@ -84,7 +84,7 @@ async def handle_end_of_test(call: types.CallbackQuery):
             text="Ёлғон мезони бўйича натижангиз 4 баллдан ошиб кетди! Сўровномага қайта жавоб беришингиз лозим!"
         )
     else:
-        user = await db.select_user(telegram_id=call.from_user.id)
+        user = await udb.select_user(telegram_id=call.from_user.id)
 
         current_date = datetime.now()
         formatted_date = current_date.strftime("%d.%m.%Y")

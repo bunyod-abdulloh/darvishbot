@@ -4,7 +4,7 @@ from magic_filter import F
 
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import start_test, test_ibuttons
-from loader import dp, db
+from loader import dp, db, udb
 from states.user import UserAnketa
 from utils.all_functions import warning_text
 from utils.yaxin import calculate_and_send_results
@@ -12,7 +12,7 @@ from utils.yaxin import calculate_and_send_results
 
 @dp.message_handler(F.text == "🧑‍💻 Testlar | So'rovnomalar")
 async def tests_main_hr(message: types.Message, state: FSMContext):
-    user = await db.select_user(telegram_id=message.from_user.id)
+    user = await udb.select_user(telegram_id=message.from_user.id)
 
     if user['fio']:
         await message.answer(text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb)
@@ -32,7 +32,7 @@ async def add_fullname_handle(message: types.Message):
         else:
             user_data = message.text
 
-        await db.updateuser_fullname(telegram_id=message.from_user.id, fio=user_data)
+        await udb.updateuser_fullname(telegram_id=message.from_user.id, fio=user_data)
         await message.answer(text="Телефон рақамингизни киритинг:\n\n<b>(Намуна: +998991234567</b>")
         await UserAnketa.add_phone.set()
     except Exception as err:
@@ -41,7 +41,7 @@ async def add_fullname_handle(message: types.Message):
 
 @dp.message_handler(state=UserAnketa.add_phone)
 async def add_phone_handle(message: types.Message, state: FSMContext):
-    await db.updateuser_phone(telegram_id=message.from_user.id, phone=message.text)
+    await udb.updateuser_phone(telegram_id=message.from_user.id, phone=message.text)
     await message.answer(text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb)
     await state.finish()
 
