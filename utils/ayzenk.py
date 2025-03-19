@@ -6,7 +6,7 @@ from aiogram import types
 
 # from data.config import ADMINS, ADMIN_GROUP
 from keyboards.inline.user_ibuttons import ayzenktemp_ikb, test_link_ibutton
-from loader import db, bot
+from loader import db, bot, udb
 
 
 async def ayztemplastquestion(question_id: int, call: types.CallbackQuery):

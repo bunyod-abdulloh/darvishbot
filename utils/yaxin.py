@@ -3,7 +3,7 @@ import asyncio
 
 from aiogram import types
 
-from loader import db
+from loader import db, udb
 
 
 async def calculate_and_send_results(call: types.CallbackQuery):

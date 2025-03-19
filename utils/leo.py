@@ -1,7 +1,7 @@
 from aiogram import types
 
 from keyboards.inline.user_ibuttons import leotest_ikb
-from loader import db
+from loader import db, udb
 
 
 async def leo_result(call: types.CallbackQuery):
