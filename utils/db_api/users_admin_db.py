@@ -7,7 +7,7 @@ class UsersDB:
 
     # =========================== TABLE | USERS ==========================
     async def add_user(self, telegram_id):
-        sql = "INSERT INTO users (telegram_id) VALUES($1)"
+        sql = "INSERT INTO users (telegram_id) VALUES($1) ON CONFLICT (telegram_id) DO NOTHING"
         return await self.db.execute(sql, telegram_id, execute=True)
 
     async def add_user_json(self, telegram_id, fio, phone):
