@@ -5,7 +5,7 @@ class UsersDB:
     def __init__(self, db: Database):
         self.db = db
 
-    # =========================== TABLE | USERS ===========================
+    # =========================== TABLE | USERS ==========================
     async def add_user(self, telegram_id):
         sql = "INSERT INTO users (telegram_id) VALUES($1)"
         return await self.db.execute(sql, telegram_id, execute=True)
