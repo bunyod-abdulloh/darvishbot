@@ -2,7 +2,6 @@ import sys
 import traceback
 
 from data.config import ADMIN_GROUP
-from loader import bot
 
 
 async def notify_exception_to_admin(err: Exception):
@@ -22,5 +21,5 @@ async def notify_exception_to_admin(err: Exception):
         f"❗ Xatolik turi: {error_type}\n"
         f"🧨 Xatolik matni: {err}"
     )
-
+    from loader import bot
     await bot.send_message(chat_id=ADMIN_GROUP, text=error_message)
