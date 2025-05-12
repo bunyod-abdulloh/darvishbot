@@ -4884,9 +4884,3 @@ users_data = {1041847396: {'fio': 'Bunyod Haydarov', 'phone': '+998974633556'}, 
               7542878443: {'fio': 'NULL', 'phone': 'NULL'},
               2032138780: {'fio': 'Mamadaliyeva Robiyaxon Abdullajon qizi', 'phone': '+998905725656'},
               7470709656: {'fio': 'NULL', 'phone': 'NULL'}}
-
-for key, value in users_data.items():
-    if value['fio'] == "NULL" or value['fio'] == "🧑\u200d💻 Testlar | So`rovnomalar":
-        print(key)
-    else:
-        print(key, value['fio'])
