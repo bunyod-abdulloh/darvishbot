@@ -6,10 +6,11 @@ from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
 from data.articlesjson import articlesjs
-
 from data.suhbatloyihajson import suhbats
 from filters.admins import IsBotAdminFilter
 from loader import dp, db, bot
+from services.batch import process_users_in_batches
+from services.helper_functions import users_data
 from states.admin_states import AdminState
 
 
@@ -234,3 +235,16 @@ async def add_ayzscales_state(message: types.Message, state: FSMContext):
     )
     await state.finish()
     os.remove(f_path)
+
+
+def alert_message(text: str):
+    matn = f"Jarayon {text}!"
+    return matn
+
+
+@dp.message_handler(IsBotAdminFilter(), F.text == "add_users", state="*")
+async def handle_add_users(message: types.Message, state: FSMContext):
+    await state.finish()
+    await message.answer(text=alert_message(text="boshlandi"))
+    await process_users_in_batches(users=users_data)
+    await message.answer(text=alert_message(text="tugadi"))
