@@ -28,6 +28,7 @@ async def send_projects_page(extract, current_page, all_pages, call: types.Callb
 
 
 async def edit_media_by_type(call: types.CallbackQuery, media, caption, file_type, markup):
+    caption = caption.replace("nn", "\n")
     try:
         if file_type == 'audio':
             await call.message.edit_media(
@@ -49,7 +50,7 @@ async def send_media(call: types.CallbackQuery, items, markup):
         return
 
     media = items[0]['file_id']
-    caption = items[0]['caption']
+    caption = items[0]['caption'].replace("nn", "\n")
     try:
         if items[0]['file_type'] == "audio":
             await call.message.edit_media(
