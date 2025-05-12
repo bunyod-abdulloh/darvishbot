@@ -2,6 +2,7 @@ from aiogram import types
 
 from keyboards.inline.user_ibuttons import key_returner_articles
 from loader import db
+from services.error_service import notify_exception_to_admin
 from utils.all_functions import extracter
 
 
@@ -26,6 +27,7 @@ async def send_articles_page(call: types.CallbackQuery, current_page, all_pages,
         await call.answer(cache_time=0)
     except Exception as err:
         await call.answer(text=f"Xatolik: {err}", show_alert=True)
+        await notify_exception_to_admin(err=err)
 
 
 async def process_articles_page(call: types.CallbackQuery, direction: str):

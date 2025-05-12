@@ -2,6 +2,7 @@ from aiogram import types
 
 from keyboards.inline.user_ibuttons import leotest_ikb
 from loader import db, udb
+from services.error_service import notify_exception_to_admin
 
 
 async def leo_result(call: types.CallbackQuery):
@@ -57,4 +58,5 @@ async def handle_answer(call: types.CallbackQuery, question_id: int, is_yes: boo
                 reply_markup=leotest_ikb(all_questions[question_id])
             )
     except Exception as err:
-        await call.answer(text=f"{err}")
+        await call.answer(text=f"{err}", show_alert=True)
+        await notify_exception_to_admin(err=err)

@@ -5,6 +5,7 @@ from magic_filter import F
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import start_test, test_ibuttons
 from loader import dp, db, udb
+from services.error_service import notify_exception_to_admin
 from states.user import UserAnketa
 from utils.all_functions import warning_text
 from utils.yaxin import calculate_and_send_results
@@ -37,6 +38,7 @@ async def add_fullname_handle(message: types.Message):
         await UserAnketa.add_phone.set()
     except Exception as err:
         await message.answer(text=f"Xatolik: {err}")
+        await notify_exception_to_admin(err=err)
 
 
 @dp.message_handler(state=UserAnketa.add_phone)
@@ -98,8 +100,9 @@ async def test_callback(call: types.CallbackQuery):
                      f"\n\n{all_questions[question_number]['question']}",
                 reply_markup=test_ibuttons(testdb=all_questions[question_number])
             )
-        except Exception as e:
-            await call.answer(text=f"Xatolik: {e}", show_alert=True)
+        except Exception as err:
+            await call.answer(text=f"Xatolik: {err}", show_alert=True)
+            await notify_exception_to_admin(err=err)
 
 
 @dp.callback_query_handler(F.data.startswith("yaxinback:"))

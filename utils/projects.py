@@ -2,6 +2,7 @@ from aiogram import types
 
 from keyboards.inline.user_ibuttons import key_returner_projects, interviews_first_ibuttons
 from loader import db
+from services.error_service import notify_exception_to_admin
 from utils.all_functions import extracter
 
 
@@ -23,8 +24,9 @@ async def send_projects_page(extract, current_page, all_pages, call: types.Callb
             await call.message.edit_text(text=projects, reply_markup=markup)
         if message:
             await message.answer(text=projects, reply_markup=markup)
-    except Exception as e:
-        await call.answer(text=f"Xatolik: {e}", show_alert=True)
+    except Exception as err:
+        await call.answer(text=f"Xatolik: {err}", show_alert=True)
+        await notify_exception_to_admin(err=err)
 
 
 async def edit_media_by_type(call: types.CallbackQuery, media, caption, file_type, markup):
@@ -40,8 +42,9 @@ async def edit_media_by_type(call: types.CallbackQuery, media, caption, file_typ
                 media=types.InputMediaVideo(media=media, caption=caption),
                 reply_markup=markup
             )
-    except Exception as e:
-        await call.answer(text=f"Xatolik yuz berdi: {e}", show_alert=True)
+    except Exception as err:
+        await call.answer(text=f"Xatolik yuz berdi: {err}", show_alert=True)
+        await notify_exception_to_admin(err=err)
 
 
 async def send_media(call: types.CallbackQuery, items, markup):
@@ -60,8 +63,9 @@ async def send_media(call: types.CallbackQuery, items, markup):
             await call.message.edit_media(
                 media=types.InputMediaVideo(media=media, caption=caption), reply_markup=markup
             )
-    except Exception as e:
-        await call.answer(text=f"Xatolik yuz berdi: {e}", show_alert=True)
+    except Exception as err:
+        await call.answer(text=f"Xatolik yuz berdi: {err}", show_alert=True)
+        await notify_exception_to_admin(err=err)
 
 
 async def fetch_and_handle_page(call: types.CallbackQuery, category_id=None, current_page=1):

@@ -7,6 +7,7 @@ from aiogram import types
 # from data.config import ADMINS, ADMIN_GROUP
 from keyboards.inline.user_ibuttons import ayzenktemp_ikb, test_link_ibutton
 from loader import db, bot, udb
+from services.error_service import notify_exception_to_admin
 
 
 async def ayztemplastquestion(question_id: int, call: types.CallbackQuery):
@@ -21,9 +22,8 @@ async def ayztemplastquestion(question_id: int, call: types.CallbackQuery):
                 reply_markup=ayzenktemp_ikb(testdb=all_questions[question_id])
             )
         except Exception as err:
-            await call.answer(
-                text=f"{err}", show_alert=True
-            )
+            await call.answer(text=f"{err}", show_alert=True)
+            await notify_exception_to_admin(err=err)
 
 
 async def calculate_scales(call: types.CallbackQuery):

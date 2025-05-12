@@ -4,6 +4,7 @@ import aiogram
 from aiogram import types
 
 from loader import bot, udb
+from services.error_service import notify_exception_to_admin
 
 
 async def send_message_to_users(message: types.Message):
@@ -17,8 +18,8 @@ async def send_message_to_users(message: types.Message):
         except aiogram.exceptions.BotBlocked:
             failed_count += 1
             await udb.delete_user(user["telegram_id"])
-        except Exception:
-            pass
+        except Exception as err:
+            await notify_exception_to_admin(err=err)
         if index % 1500 == 0:
             await asyncio.sleep(30)
         await asyncio.sleep(0.05)
@@ -37,8 +38,8 @@ async def send_media_group_to_users(media_group: types.MediaGroup):
         except aiogram.exceptions.BotBlocked:
             failed_count += 1
             await udb.delete_user(user["telegram_id"])
-        except Exception:
-            pass
+        except Exception as err:
+            await notify_exception_to_admin(err=err)
         if index % 1500 == 0:
             await asyncio.sleep(30)
         await asyncio.sleep(0.05)

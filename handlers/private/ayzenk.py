@@ -6,6 +6,7 @@ from magic_filter import F
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import ayzenktemp_ikb, start_test
 from loader import db, dp
+from services.error_service import notify_exception_to_admin
 from utils.all_functions import warning_text
 from utils.ayzenk import ayztemplastquestion, handle_response
 
@@ -67,8 +68,8 @@ async def ayztemp_answer(call: types.CallbackQuery):
         # Move to the next question or finish the test
         await ayztemplastquestion(question_id, call)
 
-    except Exception as e:
-        await call.answer(text=f"Error in ayztemp_answer: {e}")
+    except Exception as err:
+        await notify_exception_to_admin(err=err)
 
 
 @dp.callback_query_handler(F.data.startswith("ayztempback"))

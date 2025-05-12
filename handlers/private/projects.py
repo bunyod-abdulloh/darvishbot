@@ -2,6 +2,7 @@ from aiogram import types
 from magic_filter import F
 from keyboards.default.user_buttons import interviews_cbuttons
 from loader import dp
+from services.error_service import notify_exception_to_admin
 from utils.projects import send_projects_page, get_all_projects
 
 
@@ -52,7 +53,7 @@ async def interviews_projects_hr_next(call: types.CallbackQuery):
     except IndexError:
         await call.answer(text="Boshqa sahifa mavjud emas!", show_alert=True)
     except Exception as err:
-        await call.answer(text=f"{err}", show_alert=True)
+        await notify_exception_to_admin(err=err)
 
 
 @dp.message_handler(F.text == "⬅️ Ortga")
