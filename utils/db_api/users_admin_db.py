@@ -10,9 +10,9 @@ class UsersDB:
         sql = "INSERT INTO users (telegram_id) VALUES($1)"
         return await self.db.execute(sql, telegram_id, execute=True)
 
-    async def add_user_json(self, full_name, username, telegram_id, fio, phone):
-        sql = "INSERT INTO users (full_name, username, telegram_id, fio, phone) VALUES($1, $2, $3, $4, $5)"
-        return await self.db.execute(sql, full_name, username, telegram_id, fio, phone, execute=True)
+    async def add_user_json(self, telegram_id, fio, phone):
+        sql = "INSERT INTO users (telegram_id, fio, phone) VALUES($1, $2, $3)"
+        return await self.db.execute(sql, telegram_id, fio, phone, execute=True)
 
     async def updateuser_fullname(self, telegram_id, fio):
         sql = f"UPDATE users SET fio='{fio}' WHERE telegram_id='{telegram_id}'"
