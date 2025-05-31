@@ -21,6 +21,9 @@ async def send_message_to_users(message: types.Message):
         except aiogram.exceptions.UserDeactivated:
             failed_count += 1
             await udb.delete_user(user["telegram_id"])
+        except aiogram.exceptions.ChatNotFound:
+            failed_count += 1
+            await udb.delete_user(user["telegram_id"])
         except Exception as err:
             await notify_exception_to_admin(err=err)
         if index % 1500 == 0:
@@ -42,6 +45,9 @@ async def send_media_group_to_users(media_group: types.MediaGroup):
             failed_count += 1
             await udb.delete_user(user["telegram_id"])
         except aiogram.exceptions.UserDeactivated:
+            failed_count += 1
+            await udb.delete_user(user["telegram_id"])
+        except aiogram.exceptions.ChatNotFound:
             failed_count += 1
             await udb.delete_user(user["telegram_id"])
         except Exception as err:
