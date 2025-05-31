@@ -7,14 +7,15 @@ from magic_filter import F
 
 from filters.admins import IsBotAdminFilter
 from keyboards.default.admin_buttons import admin_main_btns
+from keyboards.default.user_buttons import main_dkb
 from loader import dp, udb, adb
 from states.admin import AdminStates
 from utils.db_functions import send_message_to_users, send_media_group_to_users
 
 WARNING_TEXT = (
-    "Habar yuborishdan oldin postingizni yaxshilab tekshirib oling!\n\n"
+    "Xabar yuborishdan oldin postingizni yaxshilab tekshirib oling!\n\n"
     "Imkoni bo'lsa postingizni oldin tayyorlab olib keyin yuboring.\n\n"
-    "Habaringizni kiriting:"
+    "Xabaringizni kiriting:"
 )
 
 
@@ -61,6 +62,7 @@ async def send_to_bot_users(message: types.Message):
 @dp.message_handler(state=AdminStates.SEND_TO_USERS, content_types=types.ContentTypes.ANY)
 async def send_to_bot_users_two(message: types.Message, state: FSMContext):
     await state.finish()
+    await message.answer(text="Xabar yuborish boshlandi!", reply_markup=main_dkb)
     success_count, failed_count = await send_message_to_users(message)
 
     await adb.update_send_status(False)
@@ -82,7 +84,7 @@ async def send_media_to_bot(message: types.Message):
 @dp.message_handler(state=AdminStates.SEND_MEDIA_TO_USERS, content_types=types.ContentTypes.ANY, is_media_group=True)
 async def send_media_to_bot_second(message: types.Message, album: List[types.Message], state: FSMContext):
     await state.finish()
-
+    await message.answer(text="Xabar yuborish boshlandi!", reply_markup=main_dkb)
     try:
 
         media_group = types.MediaGroup()
