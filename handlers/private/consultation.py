@@ -11,14 +11,16 @@ from states.user import UserAnketa
 async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext):
     await call.answer(cache_time=0)
     data = await state.get_data()
+    tests = ['ayzenk', 'leongard', 'yaxin']
 
-    if len(data) < 3:
-        await call.message.answer(
-            text="Консультацияга ёзилиш учун барча тестларни ишлашингиз лозим!"
-        )
+    missing = [t for t in tests if t not in data]
+    if missing:
+        missing_text = "\n".join(f"{i + 1}. {t.capitalize()}" for i, t in enumerate(missing))
+        await call.message.answer(text=f"Консультацияга ёзилиш учун барча тестларни ишлашингиз лозим!\n\n"
+                                       f"Қуйидаги тестлар ишланмади:\n\n{missing_text}")
         return
 
-    patient = await adldb.get_patient(telegram_id=str(1234567))
+    patient = await adldb.get_patient(telegram_id=call.from_user.id)
 
     if patient:
         full_name = patient[3]
@@ -100,9 +102,9 @@ async def handle_eeg_result(message: types.Message, state: FSMContext):
 async def handle_phone_number(message: types.Message, state: FSMContext):
     data = await state.get_data()
 
-    eysenc = data['eysenc_state']
-    yakhin = data['yakhin_state']
-    leo = data['leo_state']
+    eysenc = data['ayzenk']
+    yakhin = data['yaxin']
+    leo = data['leongard']
 
     # Patient jadvaliga user ma'lumotlarini qo'shish
     patient_id = await adldb.add_patient(
@@ -110,7 +112,7 @@ async def handle_phone_number(message: types.Message, state: FSMContext):
         marital_status=data['marital_status'], absence_children=data['absence_children'], work=data['work'],
         result_eeg=data['eeg_result']
     )
-
+    print(patient_id)
     await adldb.add_to_tt_eysenc(
         patient_id=patient_id, temperament=eysenc['temperament'], extraversion=eysenc['extroversion'],
         neuroticism=eysenc['neuroticism']

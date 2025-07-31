@@ -95,9 +95,7 @@ async def handle_answer(call: types.CallbackQuery, question_id: int, is_yes: boo
 
         if question_id == 88:
             leo_state = await leo_result(call=call)
-            await state.update_data(
-                leo_state=leo_state
-            )
+            await state.update_data(leongard=leo_state)
         else:
             await call.message.edit_text(
                 text=f"{all_questions[question_id]['question_number']} / {len(all_questions)}"

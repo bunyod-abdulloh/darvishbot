@@ -15,14 +15,14 @@ class AdditionalDB:
 
     async def add_patient(self, telegram_id, name, phone, marital_status, absence_children, work, result_eeg):
         sql = """
-            INSERT INTO patients (tg_id, name, phone, gender, age, marital_status, absence_children, work, result_eeg)
+            INSERT INTO clinic_patient (tg_id, name, phone, gender, age, marital_status, absence_children, work, result_eeg)
             SELECT $1, $2, $3, gender, age, $4, $5, $6, $7 FROM bot_users WHERE telegram_id = $1 RETURNING id
             """
         await self.db.execute(sql, telegram_id, name, phone, marital_status, absence_children, work, result_eeg,
                               fetchval=True)
 
     async def add_to_tt_eysenc(self, patient_id, temperament, extraversion, neuroticism):
-        sql = """INSERT INTO clinic_tt_eysenc (patient_id, temperament, extraversion, neuroticism) VALUES ($1, $2, $3, $4"""
+        sql = """INSERT INTO clinic_tt_eysenc (patient_id, temperament, extraversion, neuroticism) VALUES ($1, $2, $3, $4)"""
         return await self.db.execute(sql, patient_id, temperament, extraversion, neuroticism, execute=True)
 
     async def add_to_tt_yakhin(self, patient_id, neurotic_detected, anxiety, depression, asthenia, hysteroid_response,
