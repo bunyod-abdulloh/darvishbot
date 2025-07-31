@@ -27,8 +27,33 @@ def confirm_reenter_ibtn():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.row(
         InlineKeyboardButton(
-            text="Қайта киритиш", callback_data="re-enter"
+            text="1", callback_data="edit_fullname"
         ),
+        InlineKeyboardButton(
+            text="2", callback_data="edit_gender"
+        ),
+        InlineKeyboardButton(
+            text="3", callback_data="edit_age"
+        ),
+        InlineKeyboardButton(
+            text="4", callback_data="edit_marital_status"
+        )
+    )
+    btn.row(
+        InlineKeyboardButton(
+            text="5", callback_data="edit_absence_children"
+        ),
+        InlineKeyboardButton(
+            text="6", callback_data="edit_work"
+        ),
+        InlineKeyboardButton(
+            text="7", callback_data="edit_eeg"
+        ),
+        InlineKeyboardButton(
+            text="8", callback_data="edit_phone"
+        )
+    )
+    btn.row(
         InlineKeyboardButton(
             text="Тасдиқлаш", callback_data="confirm"
         )

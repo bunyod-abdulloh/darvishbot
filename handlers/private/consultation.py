@@ -43,14 +43,14 @@ async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext)
         }
         await call.message.answer(
             text=f"Маълумотларингиз сақланган\n\n"
-                 f"Исм шариф: {full_name}\n"
-                 f"Жинс: {patient_dict[gender]}\n"
-                 f"Ёш: {age}\n"
-                 f"Оилавий ҳолат: {patient_dict[marital_status]}\n"
-                 f"Фарзандлар: {patient_dict[absence_children]}\n"
-                 f"Иш соҳаси: {work}\n"
-                 f"ЭЭГ натижаси: {result_eeg}\n"
-                 f"Телефон рақам: {phone}\n\n"
+                 f"1. Исм шариф: {full_name}\n"
+                 f"2. Жинс: {patient_dict[gender]}\n"
+                 f"3. Ёш: {age}\n"
+                 f"4. Оилавий ҳолат: {patient_dict[marital_status]}\n"
+                 f"5. Фарзандлар: {patient_dict[absence_children]}\n"
+                 f"6. Иш соҳаси: {work}\n"
+                 f"7. ЭЭГ натижаси: {result_eeg}\n"
+                 f"8. Телефон рақам: {phone}\n\n"
                  f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса <b>Қайта киритиш</b> тугмасини босинг",
             reply_markup=confirm_reenter_ibtn()
         )
