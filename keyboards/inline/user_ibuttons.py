@@ -7,6 +7,63 @@ inline_keyboard = [[
 are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
+def sign_up_to_consultation():
+    btn = InlineKeyboardMarkup(row_width=1)
+    btn.add(InlineKeyboardButton(
+        text="Консультацияга ёзилиш", callback_data=f"consultation_test"))
+    return btn
+
+
+def select_gender_btn():
+    btn = InlineKeyboardMarkup(row_width=1)
+    btn.row(
+        InlineKeyboardButton(text="Эркак", callback_data="test_erkak"),
+        InlineKeyboardButton(text="Аёл", callback_data="test_ayol")
+    )
+    return btn
+
+
+def confirm_reenter_ibtn():
+    btn = InlineKeyboardMarkup(row_width=1)
+    btn.row(
+        InlineKeyboardButton(
+            text="Қайта киритиш", callback_data="re-enter"
+        ),
+        InlineKeyboardButton(
+            text="Тасдиқлаш", callback_data="confirm"
+        )
+    )
+    return btn
+
+
+def marital_status_ikb():
+    btn = InlineKeyboardMarkup(row_width=2)
+    btn.add(
+        InlineKeyboardButton(
+            text="Турмуш қурган", callback_data="married"
+        )
+    )
+    btn.add(
+        InlineKeyboardButton(
+            text="Турмуш қурмаган", callback_data="unmarried"
+        )
+    )
+    return btn
+
+
+def absence_children_ikb():
+    btn = InlineKeyboardMarkup(row_width=1)
+    btn.row(
+        InlineKeyboardButton(
+            text="Бор", callback_data="yes_absence_children"
+        ),
+        InlineKeyboardButton(
+            text="Йўқ", callback_data="no_absence_children"
+        )
+    )
+    return btn
+
+
 # def key_returner_selected(items, table_name, current_page, all_pages, selected):
 #     keys = InlineKeyboardMarkup(row_width=5)
 #     for item in items:

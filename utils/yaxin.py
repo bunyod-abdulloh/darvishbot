@@ -2,11 +2,13 @@
 import asyncio
 
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 
-from loader import db, udb
+from keyboards.inline.user_ibuttons import sign_up_to_consultation
+from loader import yxndb, stdb
 
 
-async def calculate_and_send_results(call: types.CallbackQuery):
+async def calculate_and_send_results(call: types.CallbackQuery, state: FSMContext):
     scales = {
         "Хавотир мезони": "xavotir",
         "Невротик - депрессия мезони": "nevrotikdep",
@@ -23,7 +25,7 @@ async def calculate_and_send_results(call: types.CallbackQuery):
             scales.keys(),
             await asyncio.gather(
                 *[
-                    db.select_datas_temporary(telegram_id=call.from_user.id, scale_type=scale)
+                    yxndb.select_datas_temporary(telegram_id=call.from_user.id, scale_type=scale)
                     for scale in scales.values()
                 ]
             ),
@@ -40,17 +42,31 @@ async def calculate_and_send_results(call: types.CallbackQuery):
     footer_text = (
         "Мезонлардаги кўрсаткичлар + 1.28 дан юқори бўлса соғломлик даражасини, - 1.28 дан паст бўлса "
         "невротик ҳолат борлигидан далолат беради. Иккисини ўртасидаги кўрсаткич эса нотурғун психик "
-        "мослашувчанликни билдиради.\n\nКонсультация учун:\n\n@Hidaya_Med_Clinic_administrator"
-        "\n\n+998339513444"
+        "мослашувчанликни билдиради."
     )
 
-    # Foydalanuvchi ma'lumotlarini olish
-    user = await udb.select_user(telegram_id=call.from_user.id)
     result_message = (
-        f"Тест тури: Яхин, Менделевич | Невротик ҳолатни аниқлаш\n\n"
-        f"Исм-шариф: {user['fio']}\nТелефон рақам: {user['phone']}\n\n"
+        f"Тест тури: Яхин, Менделевич | Невротик ҳолатни аниқлаш\n\n"        
         f"{last_result}\n\n{nevrotik_text}\n\n{footer_text}"
     )
 
     # Xabarni yangilash
-    await call.message.edit_text(text=result_message)
+    await call.message.answer(text=result_message, reply_markup=sign_up_to_consultation())
+
+    await yxndb.delete_user_yaxintemporary(telegram_id=call.from_user.id)
+
+    yakhin_stt = {
+        "anxiety": float(list(result.values())[0]),
+        "depression": float(list(result.values())[1]),
+        "asthenia": float(list(result.values())[2]),
+        "hysteroid_response": float(list(result.values())[3]),
+        "obsessive_phobic": float(list(result.values())[4]),
+        "vegetative": float(list(result.values())[5]),
+        "neurotic_detected": nevrotik_detected
+    }
+
+    await state.update_data(yakhin_state=yakhin_stt)
+
+    await stdb.set_test_result(
+        telegram_id=call.from_user.id, test_type="Yaxin", result=f"{nevrotik_detected}"
+    )

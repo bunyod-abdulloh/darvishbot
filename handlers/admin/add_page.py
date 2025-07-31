@@ -8,7 +8,7 @@ from magic_filter import F
 from data.articlesjson import articlesjs
 from data.suhbatloyihajson import suhbats
 from filters.admins import IsBotAdminFilter
-from loader import dp, db, bot
+from loader import dp, db, bot, yxndb, leodb, ayzdb
 from services.batch import process_users_in_batches
 from services.helper_functions import users_data
 from states.admin_states import AdminState
@@ -72,7 +72,7 @@ async def add_yaxin_quests(message: types.Message, state: FSMContext):
     df = pd.read_excel(f_path, sheet_name=0)
     c = 0
     for row in df.values:
-        await db.add_questions_yaxin(
+        await yxndb.add_questions_yaxin(
             scale_type=row[0],
             question=row[1],
             a=row[2],
@@ -106,7 +106,7 @@ async def add_yaxscales_state(message: types.Message, state: FSMContext):
     df = pd.read_excel(f_path, sheet_name=0)
     c = 0
     for row in df.values:
-        await db.add_yaxin_scales(
+        await yxndb.add_yaxin_scales(
             scale_type=row[0],
             question_number=row[1],
             point_one=row[2],
@@ -139,7 +139,7 @@ async def add_leoquest_state(message: types.Message, state: FSMContext):
     df = pd.read_excel(f_path, sheet_name=0)
     c = 0
     for row in df.values:
-        await db.add_leoquestions(
+        await leodb.add_leoquestions(
             question_number=row[0],
             question=row[1]
         )
@@ -167,7 +167,7 @@ async def add_leoscales_state(message: types.Message, state: FSMContext):
     df = pd.read_excel(f_path, sheet_name=0)
     c = 0
     for row in df.values:
-        await db.add_leoscales(
+        await leodb.add_leoscales(
             scale_type=row[0],
             yes=row[1],
             no_=row[2]
@@ -196,7 +196,7 @@ async def add_ayzquestion_state(message: types.Message, state: FSMContext):
     df = pd.read_excel(f_path, sheet_name=0)
     c = 0
     for row in df.values:
-        await db.add_ayztempquestion(
+        await ayzdb.add_ayztempquestion(
             question_number=row[0],
             question=row[1]
         )
@@ -224,7 +224,7 @@ async def add_ayzscales_state(message: types.Message, state: FSMContext):
     df = pd.read_excel(f_path, sheet_name=0)
     c = 0
     for row in df.values:
-        await db.add_ayztempscales(
+        await ayzdb.add_ayztempscales(
             scale_type=row[0],
             yes=row[1],
             no_=row[2]

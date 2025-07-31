@@ -4,53 +4,15 @@ from magic_filter import F
 
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import start_test, test_ibuttons
-from loader import dp, db, udb
+from loader import dp, yxndb
 from services.error_service import notify_exception_to_admin
-from states.user import UserAnketa
 from utils.all_functions import warning_text
 from utils.yaxin import calculate_and_send_results
 
 
-@dp.message_handler(F.text == "🧑‍💻 Testlar | So'rovnomalar")
-async def tests_main_hr(message: types.Message, state: FSMContext):
-    user = await udb.select_user(telegram_id=message.from_user.id)
-
-    if user['fio']:
-        await message.answer(text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb)
-        await state.finish()
-    else:
-        await message.answer(
-            text="Тўлиқ исм-шарифингизни киритинг:\n\n<b>(Намуна: Тешабоева Гавҳар Дарвишовна)</b>"
-        )
-        await UserAnketa.add_fullname.set()
-
-
-@dp.message_handler(state=UserAnketa.add_fullname)
-async def add_fullname_handle(message: types.Message):
-    try:
-        if "'" in message.text:
-            user_data = message.text.replace("'", "`")
-        else:
-            user_data = message.text
-
-        await udb.updateuser_fullname(telegram_id=message.from_user.id, fio=user_data)
-        await message.answer(text="Телефон рақамингизни киритинг:\n\n<b>(Намуна: +998991234567</b>")
-        await UserAnketa.add_phone.set()
-    except Exception as err:
-        await message.answer(text=f"Xatolik: {err}")
-        await notify_exception_to_admin(err=err)
-
-
-@dp.message_handler(state=UserAnketa.add_phone)
-async def add_phone_handle(message: types.Message, state: FSMContext):
-    await udb.updateuser_phone(telegram_id=message.from_user.id, phone=message.text)
-    await message.answer(text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb)
-    await state.finish()
-
-
-@dp.message_handler(F.text == "Yaxin Mendelevich so'rovnomasi")
+@dp.message_handler(F.text == "Яхин Менделевич сўровномаси", state="*")
 async def test_command(message: types.Message):
-    await db.delete_user_yaxintemporary(telegram_id=message.from_user.id)
+    await yxndb.delete_user_yaxintemporary(telegram_id=message.from_user.id)
     await message.answer(
         text="Ушбу клиник сўровнома невротик ҳолатларнинг асосий синдромларини аниқлашга ёрдам беради. Клиник сўровнома "
              "натижалари қуйидаги 6 та мезон бўйича аниқланиб таҳлил қилинади:"
@@ -63,36 +25,36 @@ async def test_command(message: types.Message):
     )
 
 
-@dp.callback_query_handler(F.data == "yaxintest")
+@dp.callback_query_handler(F.data == "yaxintest", state="*")
 async def start_test_yaxin(call: types.CallbackQuery):
-    all_questions = await db.select_all_yaxin()
+    all_questions = await yxndb.select_all_yaxin()
     await call.message.edit_text(
         text=f"{warning_text}\n\n{all_questions[0]['id']} / {len(all_questions)}\n\n{all_questions[0]['question']}",
         reply_markup=test_ibuttons(testdb=all_questions[0])
     )
 
 
-@dp.callback_query_handler(F.data.startswith("point_"))
-async def test_callback(call: types.CallbackQuery):
+@dp.callback_query_handler(F.data.startswith("point_"), state="*")
+async def test_callback(call: types.CallbackQuery, state: FSMContext):
     column_name, scale_type, question_number = call.data.split(":")
     question_number = int(question_number)
 
     await call.answer(cache_time=0)
 
-    all_questions = await db.select_all_yaxin()
+    all_questions = await yxndb.select_all_yaxin()
     scale_parts = scale_type.split("-")
 
     # Handle multi-scale responses
     for scale in (scale_parts if len(scale_parts) > 1 else [scale_type]):
-        point = await db.select_question_scale(scale_type=scale, question_number=question_number)
+        point = await yxndb.select_question_scale(scale_type=scale, question_number=question_number)
 
-        await db.add_yaxin_temporary(
+        await yxndb.add_yaxin_temporary(
             telegram_id=call.from_user.id, scale_type=scale, question_number=question_number,
             test_type="nevroz_yaxin", answer=point[column_name]
         )
 
     if all_questions[-1]['id'] == question_number:
-        await calculate_and_send_results(call)
+        await calculate_and_send_results(call=call, state=state)
     else:
         try:
             await call.message.edit_text(
@@ -105,16 +67,16 @@ async def test_callback(call: types.CallbackQuery):
             await notify_exception_to_admin(err=err)
 
 
-@dp.callback_query_handler(F.data.startswith("yaxinback:"))
+@dp.callback_query_handler(F.data.startswith("yaxinback:"), state="*")
 async def test_back_callback(call: types.CallbackQuery):
     question_number = int(call.data.split(":")[1])
 
     if question_number == 0:
         await call.message.delete()
-        await call.message.answer(text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb)
+        await call.message.answer(text="🧑‍💻 Тестлар | Сўровномалар", reply_markup=tests_main_dkb)
     else:
-        await db.back_yaxintemporary(telegram_id=call.from_user.id, question_number=question_number)
-        all_questions = await db.select_all_yaxin()
+        await yxndb.back_yaxintemporary(telegram_id=call.from_user.id, question_number=question_number)
+        all_questions = await yxndb.select_all_yaxin()
         await call.message.edit_text(
             text=f"{all_questions[question_number - 1]['id']} / {len(all_questions)}"
                  f"\n\n{all_questions[question_number - 1]['question']}",

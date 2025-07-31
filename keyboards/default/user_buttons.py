@@ -4,11 +4,11 @@ main_dkb = ReplyKeyboardMarkup(
     keyboard=
     [
         [
-            KeyboardButton(text="🧑‍💻 Testlar | So'rovnomalar")
+            KeyboardButton(text="🧑‍💻 Тестлар | Сўровномалар")
         ],
         [
-            KeyboardButton(text="🎙 Suhbat va loyihalar"),
-            KeyboardButton(text="📝 Maqolalar")
+            KeyboardButton(text="🎙 Суҳбат ва лойиҳалар"),
+            KeyboardButton(text="📝 Мақолалар")
         ],
     ],
     resize_keyboard=True,
@@ -18,14 +18,14 @@ main_dkb = ReplyKeyboardMarkup(
 tests_main_dkb = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="Yaxin Mendelevich so'rovnomasi"),
-            KeyboardButton(text="Ayzenk | Temperament aniqlash")
+            KeyboardButton(text="Яхин Менделевич сўровномаси"),
+            KeyboardButton(text="Айзенк | Темперамент аниқлаш")
         ],
         [
-            KeyboardButton(text="Leongard so'rovnomasi")
+            KeyboardButton(text="Леонгард сўровномаси")
         ],
         [
-            KeyboardButton(text="🏡 Bosh sahifa")
+            KeyboardButton(text="🏡 Бош саҳифа")
         ]
     ],
     resize_keyboard=True,
@@ -35,10 +35,10 @@ tests_main_dkb = ReplyKeyboardMarkup(
 interviews_cbuttons = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text="🎙 Suhbat va loyihalar")
+            KeyboardButton(text="🎙 Суҳбат ва лойиҳалар")
         ],
         [
-            KeyboardButton(text="🏡 Bosh sahifa")
+            KeyboardButton(text="🏡 Бош саҳифа")
         ]
     ],
     resize_keyboard=True,

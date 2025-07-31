@@ -1,3 +1,20 @@
+from aiogram import types
+
+from keyboards.default.user_buttons import main_dkb
+from loader import udb
+
+
+async def check_user_test(call: types.CallbackQuery) -> bool:
+    check_user = await udb.check_user(telegram_id=call.from_user.id)
+    if not check_user:
+        await call.message.answer(
+            text="Тест ишлаш учун маълумотларингиз тўлиқ киритилмаган!",
+            reply_markup=main_dkb
+        )
+        return False
+    return True
+
+
 # import csv
 #
 # result = {}

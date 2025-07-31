@@ -1,4 +1,4 @@
-from utils.db_api.postgres import Database
+from utils.db_api.create_db_tables import Database
 
 
 class AdminDB:

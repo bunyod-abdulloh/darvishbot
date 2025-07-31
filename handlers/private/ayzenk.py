@@ -1,20 +1,18 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-
 from magic_filter import F
 
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import ayzenktemp_ikb, start_test
-from loader import db, dp
+from loader import dp, ayzdb
 from services.error_service import notify_exception_to_admin
 from utils.all_functions import warning_text
 from utils.ayzenk import ayztemplastquestion, handle_response
 
 
-@dp.message_handler(F.text == "Ayzenk | Temperament aniqlash", state="*")
+@dp.message_handler(F.text == "Айзенк | Темперамент аниқлаш", state="*")
 async def temperament_router(message: types.Message, state: FSMContext):
-    await state.finish()
-    await db.delete_ayztemptemp(
+    await ayzdb.delete_ayztemptemp(
         telegram_id=message.from_user.id
     )
 
@@ -43,8 +41,8 @@ async def temperament_router(message: types.Message, state: FSMContext):
 # Handler for starting the test
 @dp.callback_query_handler(F.data == "ayztemp")
 async def ayztemp_go(call: types.CallbackQuery):
-    await db.delete_ayztemptemp(telegram_id=call.from_user.id)
-    all_questions = await db.select_questions_ayztemp()
+    await ayzdb.delete_ayztemptemp(telegram_id=call.from_user.id)
+    all_questions = await ayzdb.select_questions_ayztemp()
 
     await call.message.edit_text(
         text=f"{warning_text}\n\n{all_questions[0]['question_number']} / {len(all_questions)}\n\n"
@@ -53,9 +51,9 @@ async def ayztemp_go(call: types.CallbackQuery):
     )
 
 
-@dp.callback_query_handler(F.data.startswith("ayztemp:yes:"))
-@dp.callback_query_handler(F.data.startswith("ayztemp:no:"))
-async def ayztemp_answer(call: types.CallbackQuery):
+@dp.callback_query_handler(F.data.startswith("ayztemp:yes:"), state="*")
+@dp.callback_query_handler(F.data.startswith("ayztemp:no:"), state="*")
+async def ayztemp_answer(call: types.CallbackQuery, state: FSMContext):
     try:
         question_id = int(call.data.split(":")[2])
         await call.answer(cache_time=0)
@@ -66,7 +64,7 @@ async def ayztemp_answer(call: types.CallbackQuery):
             await handle_response("no", question_id, call)
 
         # Move to the next question or finish the test
-        await ayztemplastquestion(question_id, call)
+        await ayztemplastquestion(question_id, call, state)
 
     except Exception as err:
         await notify_exception_to_admin(err=err)
@@ -80,8 +78,8 @@ async def ayzback_callback(call: types.CallbackQuery):
         await call.message.delete()
         await call.message.answer(text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb)
     else:
-        await db.back_user_ayztemptemp(telegram_id=call.from_user.id, question_number=question_id)
-        all_questions = await db.select_questions_ayztemp()
+        await ayzdb.back_user_ayztemptemp(telegram_id=call.from_user.id, question_number=question_id)
+        all_questions = await ayzdb.select_questions_ayztemp()
 
         await call.message.edit_text(
             text=f"{all_questions[question_id - 1]['question_number']} / {len(all_questions)}\n\n{all_questions[question_id - 1]['question']}",

@@ -7,7 +7,7 @@ from utils.articles import process_articles_page
 from utils.all_functions import extracter
 
 
-@dp.message_handler(F.text == "📝 Maqolalar")
+@dp.message_handler(F.text == "📝 Мақолалар")
 async def articles_hr_one(message: types.Message):
     all_articles = await db.select_all_articles()
     if all_articles:

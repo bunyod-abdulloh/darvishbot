@@ -6,7 +6,7 @@ from services.error_service import notify_exception_to_admin
 from utils.projects import send_projects_page, get_all_projects
 
 
-@dp.message_handler(F.text == "🎙 Suhbat va loyihalar")
+@dp.message_handler(F.text == "🎙 Суҳбат ва лойиҳалар")
 async def interviews_projects_hr_one(message: types.Message):
     extract = await get_all_projects()
 

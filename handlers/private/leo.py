@@ -1,16 +1,17 @@
 from aiogram import types
+from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import start_test, leotest_ikb
-from loader import dp, db
+from loader import dp, leodb
 from utils.all_functions import warning_text
 from utils.leo import handle_answer
 
 
-@dp.message_handler(F.text == "Leongard so'rovnomasi")
+@dp.message_handler(F.text == "Леонгард сўровномаси", state="*")
 async def leo_main_router(message: types.Message):
-    await db.delete_leotemp(telegram_id=message.from_user.id)
+    await leodb.delete_leotemp(telegram_id=message.from_user.id)
     await message.answer(
         text="Ушбу тест характернинг акцентуациясини ўрганувчи Сўровнома бўлиб, ўз ичига 88 та савол, 10 та шкалани "
              "олади. Биринчи шкала шахсни хаётий фаоллигини ўрганувчи, иккинчи шкала эса акцентуацияни таъсирланишини "
@@ -27,9 +28,9 @@ async def leo_main_router(message: types.Message):
     )
 
 
-@dp.callback_query_handler(F.data == "leoxarakter")
+@dp.callback_query_handler(F.data == "leoxarakter", state="*")
 async def leo_second_router(call: types.CallbackQuery):
-    all_questions = await db.select_questions_leo()
+    all_questions = await leodb.select_questions_leo()
     await call.message.edit_text(
         text=f"{warning_text}\n\n{all_questions[0]['question_number']} / {len(all_questions)}\n\n"
              f"{all_questions[0]['question']}",
@@ -37,30 +38,30 @@ async def leo_second_router(call: types.CallbackQuery):
     )
 
 
-@dp.callback_query_handler(F.data.startswith("leoyes:"))
-async def leoyes_callback(call: types.CallbackQuery):
+@dp.callback_query_handler(F.data.startswith("leoyes:"), state="*")
+async def leoyes_callback(call: types.CallbackQuery, state: FSMContext):
     question_id = int(call.data.split(":")[1])
-    await handle_answer(call, question_id, is_yes=True)
+    await handle_answer(call, question_id, is_yes=True, state=state)
 
 
-@dp.callback_query_handler(F.data.startswith("leono:"))
-async def leono_callback(call: types.CallbackQuery):
+@dp.callback_query_handler(F.data.startswith("leono:"), state="*")
+async def leono_callback(call: types.CallbackQuery, state: FSMContext):
     question_id = int(call.data.split(":")[1])
-    await handle_answer(call, question_id, is_yes=False)
+    await handle_answer(call, question_id, is_yes=False, state=state)
 
 
-@dp.callback_query_handler(F.data.startswith("leoback"))
+@dp.callback_query_handler(F.data.startswith("leoback"), state="*")
 async def leoback_callback(call: types.CallbackQuery):
     question_id = int(call.data.split(":")[1])
 
     if question_id == 0:
         await call.message.delete()
         await call.message.answer(
-            text="🧑‍💻 Testlar | So'rovnomalar", reply_markup=tests_main_dkb
+            text="🧑‍💻 Тестлар | Сўровномалар", reply_markup=tests_main_dkb
         )
     else:
-        await db.back_leotemp(telegram_id=call.from_user.id, question_number=question_id)
-        all_questions = await db.select_questions_leo()
+        await leodb.back_leotemp(telegram_id=call.from_user.id, question_number=question_id)
+        all_questions = await leodb.select_questions_leo()
         await call.message.edit_text(
             text=f"{all_questions[question_id - 1]['question_number']} / {len(all_questions)}"
                  f"\n\n{all_questions[question_id - 1]['question']}",

@@ -20,7 +20,7 @@ async def bot_start(message: types.Message, state: FSMContext):
         await notify_exception_to_admin(err=err)
 
 
-@dp.message_handler(F.text == "🏡 Bosh sahifa", state="*")
+@dp.message_handler(F.text == "🏡 Бош саҳифа", state="*")
 async def main_page_handle(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer(

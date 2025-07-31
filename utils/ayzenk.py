@@ -1,20 +1,24 @@
 # import os
-from datetime import datetime
 
 from aiogram import types
-# from docx import Document
+from aiogram.dispatcher import FSMContext
 
 # from data.config import ADMINS, ADMIN_GROUP
-from keyboards.inline.user_ibuttons import ayzenktemp_ikb, test_link_ibutton
-from loader import db, bot, udb
+from keyboards.inline.user_ibuttons import ayzenktemp_ikb, sign_up_to_consultation
+from loader import stdb, ayzdb
 from services.error_service import notify_exception_to_admin
+from services.helper_functions import check_user_test
 
 
-async def ayztemplastquestion(question_id: int, call: types.CallbackQuery):
+# from docx import Document
+
+
+async def ayztemplastquestion(question_id: int, call: types.CallbackQuery, state: FSMContext):
+
     if question_id == 57:
-        await handle_end_of_test(call=call)
+        await handle_end_of_test(call=call, state=state)
     else:
-        all_questions = await db.select_questions_ayztemp()
+        all_questions = await ayzdb.select_questions_ayztemp()
         try:
             await call.message.edit_text(
                 text=f"{all_questions[question_id]['question_number']} / {len(all_questions)}\n\n"
@@ -37,14 +41,13 @@ async def calculate_scales(call: types.CallbackQuery):
     }
 
     for scale in scales.keys():
-        yes_sum = await db.select_sum_ayztemptemp(telegram_id=call.from_user.id, scale_type=scale, column="yes")
-        no_sum = await db.select_sum_ayztemptemp(telegram_id=call.from_user.id, scale_type=scale, column="no_")
+        yes_sum = await ayzdb.select_sum_ayztemptemp(telegram_id=call.from_user.id, scale_type=scale, column="yes")
+        no_sum = await ayzdb.select_sum_ayztemptemp(telegram_id=call.from_user.id, scale_type=scale, column="no_")
 
         if yes_sum['sum']:
             scales[scale] += yes_sum['sum']
         if no_sum['sum']:
             scales[scale] += no_sum['sum']
-
     return scales
 
 
@@ -56,24 +59,27 @@ async def generate_temperament(scales):
     neuroticism = float(scales["neyrotizm"])
 
     if extroversion > 12 < neuroticism:
-        temperament = f"Темперамент: Холерик\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        text = f"Темперамент: Холерик\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        temperament = "Холерик"
     elif extroversion > 12 > neuroticism:
-        temperament = f"Темперамент: Сангвиник\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        text = f"Темперамент: Сангвиник\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        temperament = "Сангвиник"
     elif extroversion < 12 > neuroticism:
-        temperament = f"Темперамент: Флегматик\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        text = f"Темперамент: Флегматик\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        temperament = "Флегматик"
     else:
-        temperament = f"Темперамент: Меланхолик\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        text = f"Темперамент: Меланхолик\n\nЭкстраверсия - интроверсия: {extroversion} балл\n\nНейротизм: {neuroticism} балл"
+        temperament = "Меланхолик"
 
-    return extroversion, neuroticism, temperament
+    return extroversion, neuroticism, text, temperament
 
 
-async def handle_end_of_test(call: types.CallbackQuery):
+async def handle_end_of_test(call: types.CallbackQuery, state: FSMContext):
     """
     Handle end of the test and generate the result.
     """
-
     scales = await calculate_scales(call)
-    extroversion, neuroticism, temperament = await generate_temperament(scales)
+    extroversion, neuroticism, text, temperament = await generate_temperament(scales)
 
     if 12 in (extroversion, neuroticism):
         await call.message.edit_text(
@@ -84,37 +90,56 @@ async def handle_end_of_test(call: types.CallbackQuery):
             text="Ёлғон мезони бўйича натижангиз 4 баллдан ошиб кетди! Сўровномага қайта жавоб беришингиз лозим!"
         )
     else:
-        user = await udb.select_user(telegram_id=call.from_user.id)
 
-        current_date = datetime.now()
-        formatted_date = current_date.strftime("%d.%m.%Y")
+        if not await check_user_test(call=call):
+            return
 
-        await call.message.edit_text(
-            text=f"Сўровнома якунланди!\n\nТест тури: Айзенк | Шахсият сўровномаси\n\nСана: {formatted_date}\n"
-                 f"Ф.И.О: {user['fio']}\nТелефон рақам: {user['phone']}\n\n{temperament}",
-            reply_markup=test_link_ibutton(
-                link="https://telegra.ph/Ajzenk-SHahsiyat-s%D1%9Erovnomasiga-izo%D2%B3-07-20")
+        await call.message.answer(
+            text=f"Сўровнома якунланди!\n\nТест тури: Айзенк | Шахсият сўровномаси\n"
+                 f"\n\n{text}\n\n<a href='https://telegra.ph/Ajzenk-SHahsiyat-s%D1%9Erovnomasiga-izo%D2%B3-07-20'>Кўрсатмалар</a>",
+            reply_markup=sign_up_to_consultation()
+        )
+
+        await ayzdb.delete_ayztemptemp(telegram_id=call.from_user.id)
+
+        temperament_map = {
+            'Холерик': 'Xolerik',
+            'Флегматик': 'Flegmatik',
+            'Сангвиник': 'Sangvinik',
+            'Меланхолик': 'Melanxolik'
+        }
+
+        eysenc_state = {"temperament": temperament_map[temperament],
+                        "extroversion": extroversion,
+                        "neuroticism": neuroticism}
+
+        await state.update_data(eysenc_state=eysenc_state)
+
+        temperament_result = temperament_map.get(temperament)
+
+        await stdb.set_test_result(
+            telegram_id=call.from_user.id, test_type="Ayzenk", result=temperament_result
         )
         # await convert_to_docx(
         #     text=f"Сана: {formatted_date}\n\nТест тури: Айзенк | Шахсият сўровномаси\n\n"
         #          f"Ф.И.О: {user['fio']}\nТелефон рақам: {user['phone']}\n\n{temperament}",
         #     filename=f"{call.from_user.id}", current_date=formatted_date)
-        await db.delete_ayztemptemp(telegram_id=call.from_user.id)
+
 
 
 # Define a helper function to handle "yes" and "no" cases
 async def handle_response(response_type, question_id, call: types.CallbackQuery):
     column = "yes" if response_type == "yes" else "no_"
-    get_scale = await db.get_ayzscales_by_value(value=question_id, column=column)
+    get_scale = await ayzdb.get_ayzscales_by_value(value=question_id, column=column)
 
     if get_scale:
-        get_question = await db.select_check_ayztemptemp(
+        get_question = await ayzdb.select_check_ayztemptemp(
             telegram_id=call.from_user.id, question_number=question_id
         )
 
         if get_question is None:
             add_method = (
-                db.add_ayztemptempyes if response_type == "yes" else db.add_ayztemptempno
+                ayzdb.add_ayztemptempyes if response_type == "yes" else ayzdb.add_ayztemptempno
             )
             await add_method(
                 telegram_id=call.from_user.id,
