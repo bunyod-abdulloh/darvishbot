@@ -118,7 +118,7 @@ async def handle_end_of_test(call: types.CallbackQuery, state: FSMContext):
         temperament_result = temperament_map.get(temperament)
 
         await stdb.set_test_result(
-            telegram_id=call.from_user.id, test_type="Ayzenk", result=temperament_result
+            telegram_id=str(call.from_user.id), test_type="Ayzenk", result=temperament_result
         )
         # await convert_to_docx(
         #     text=f"Сана: {formatted_date}\n\nТест тури: Айзенк | Шахсият сўровномаси\n\n"

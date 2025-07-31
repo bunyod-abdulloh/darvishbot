@@ -42,9 +42,9 @@ class Database:
             """
             CREATE TABLE IF NOT EXISTS bot_users (
                 id SERIAL PRIMARY KEY,                
-                telegram_id BIGINT NOT NULL UNIQUE,
+                telegram_id VARCHAR(50) NOT NULL UNIQUE,
                 gender VARCHAR(5) NULL,
-                age SMALLINT NULL                                
+                age VARCHAR(5) NULL                                
             );
             """,
             """

@@ -20,7 +20,7 @@ async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext)
                                        f"Қуйидаги тестлар ишланмади:\n\n{missing_text}")
         return
 
-    patient = await adldb.get_patient(telegram_id=call.from_user.id)
+    patient = await adldb.get_patient(telegram_id=str(call.from_user.id))
 
     if patient:
         full_name = patient[3]
@@ -108,18 +108,18 @@ async def handle_phone_number(message: types.Message, state: FSMContext):
 
     # Patient jadvaliga user ma'lumotlarini qo'shish
     patient_id = await adldb.add_patient(
-        telegram_id=message.from_user.id, name=data['user_full_name'], phone=message.text,
+        telegram_id=str(message.from_user.id), name=data['user_full_name'], phone=message.text,
         marital_status=data['marital_status'], absence_children=data['absence_children'], work=data['work'],
         result_eeg=data['eeg_result']
     )
-    print(patient_id)
+
     await adldb.add_to_tt_eysenc(
         patient_id=patient_id, temperament=eysenc['temperament'], extraversion=eysenc['extroversion'],
         neuroticism=eysenc['neuroticism']
     )
 
     await adldb.add_to_tt_yakhin(
-        patient_id=patient_id, neurotic_detected=yakhin['neurotic_detected'], anxiety=yakhin['anxiety'],
+        patient_id=patient_id, neurotic_detected=str(yakhin['neurotic_detected']), anxiety=yakhin['anxiety'],
         depression=yakhin['depression'], asthenia=yakhin['asthenia'], hysteroid_response=yakhin['hysteroid_response'],
         obsessive_phobic=yakhin['obsessive_phobic'], vegetative=yakhin['vegetative']
     )

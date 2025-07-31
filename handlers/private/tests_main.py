@@ -10,7 +10,7 @@ from states.user import UserAnketa
 
 @dp.message_handler(F.text == "🧑‍💻 Тестлар | Сўровномалар", state="*")
 async def tests_main_hr(message: types.Message, state: FSMContext):
-    check_user = await udb.check_user(telegram_id=message.from_user.id)
+    check_user = await udb.check_user(telegram_id=str(message.from_user.id))
 
     await state.finish()
 
@@ -45,6 +45,6 @@ async def handle_gender(call: types.CallbackQuery, state: FSMContext):
     )
     
     await udb.update_user_info(
-        telegram_id=call.from_user.id, age=age, gender=gender
+        telegram_id=str(call.from_user.id), age=age, gender=gender
     )
     await state.finish()

@@ -34,18 +34,7 @@ async def leo_result(call: types.CallbackQuery):
     }
 
     # Maksimal balllar belgilab olinadi
-    max_scores = {
-        "isteroid": 22,
-        "pedantic": 22,
-        "rigid": 18,
-        "epileptoid": 24,
-        "gipertim": 24,
-        "distimic": 15,
-        "danger": 21,
-        "ciclomistic": 24,
-        "affectexaltir": 24,
-        "emotiv": 21
-    }
+    MAX_SCORE = 24
 
     results = {}
     leo_state = {}
@@ -71,11 +60,11 @@ async def leo_result(call: types.CallbackQuery):
     dominant_type = str()
 
     if results:
-        dominant_type = max(results, key=lambda k: results[k] / max_scores.get(k, 1))
+        dominant_type = max(results, key=lambda k: results[k] / MAX_SCORE)
 
     # Foydalanuvchining umumiy natijasini statistika uchun bazaga yozamiz
-    await stdb.set_test_result(telegram_id=call.from_user.id, test_type="Leongard", result=dominant_type)
-
+    await stdb.set_test_result(telegram_id=str(call.from_user.id), test_type="Leongard", result=dominant_type)
+    print(leo_state)
     return leo_state
 
 

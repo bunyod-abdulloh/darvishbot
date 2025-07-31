@@ -15,7 +15,7 @@ async def bot_start(message: types.Message, state: FSMContext):
                          reply_markup=main_dkb)
 
     try:
-        await udb.add_user(telegram_id=message.from_user.id)
+        await udb.add_user(telegram_id=str(message.from_user.id))
     except Exception as err:
         await notify_exception_to_admin(err=err)
 
