@@ -51,7 +51,7 @@ async def calculate_and_send_results(call: types.CallbackQuery, state: FSMContex
     )
 
     # Xabarni yangilash
-    await call.message.answer(text=result_message, reply_markup=sign_up_to_consultation())
+    await call.message.edit_text(text=result_message, reply_markup=sign_up_to_consultation())
 
     await yxndb.delete_user_yaxintemporary(telegram_id=call.from_user.id)
 

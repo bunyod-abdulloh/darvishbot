@@ -17,8 +17,8 @@ def sign_up_to_consultation():
 def select_gender_btn():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.row(
-        InlineKeyboardButton(text="Эркак", callback_data="test_erkak"),
-        InlineKeyboardButton(text="Аёл", callback_data="test_ayol")
+        InlineKeyboardButton(text="Эркак", callback_data="test_male"),
+        InlineKeyboardButton(text="Аёл", callback_data="test_female")
     )
     return btn
 

@@ -4,6 +4,7 @@ from magic_filter import F
 
 from keyboards.inline.user_ibuttons import confirm_reenter_ibtn, marital_status_ikb, absence_children_ikb
 from loader import dp, adldb
+from services.helper_functions import handle_add_results
 from states.user import UserAnketa
 
 
@@ -24,20 +25,32 @@ async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext)
 
     if patient:
         full_name = patient[3]
-        gender = patient[9]
-        age = patient[7]
-        marital_status = patient[5]
-        absence_children = patient[6]
-        work = patient[8]
+        gender = patient[4]
+        age = patient[5]
+        marital_status = patient[7]
+        absence_children = patient[8]
+        work = patient[9]
+        result_eeg = patient[10]
+        phone = patient[6]
 
+        patient_dict = {
+            "male": "Эркак",
+            "female": "Аёл",
+            "married": "Турмуш қурган",
+            "unmarried": "Турмуш қурмаган",
+            "yes": "Бор",
+            "no": "Йўқ"
+        }
         await call.message.answer(
             text=f"Маълумотларингиз сақланган\n\n"
                  f"Исм шариф: {full_name}\n"
-                 f"Жинс: {gender}\n"
+                 f"Жинс: {patient_dict[gender]}\n"
                  f"Ёш: {age}\n"
-                 f"Оилавий ҳолат: {marital_status}\n"
-                 f"Фарзандлар: {absence_children}\n"
-                 f"Иш соҳаси: {work}\n\n"
+                 f"Оилавий ҳолат: {patient_dict[marital_status]}\n"
+                 f"Фарзандлар: {patient_dict[absence_children]}\n"
+                 f"Иш соҳаси: {work}\n"
+                 f"ЭЭГ натижаси: {result_eeg}\n"
+                 f"Телефон рақам: {phone}\n\n"
                  f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса <b>Қайта киритиш</b> тугмасини босинг",
             reply_markup=confirm_reenter_ibtn()
         )
@@ -52,10 +65,18 @@ async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext)
 @dp.callback_query_handler(F.data == "re-enter", state="*")
 async def handle_confirm_reenter(call: types.CallbackQuery, state: FSMContext):
     if call.data == "confirm":
-        pass
+        await handle_add_results(
+            state=state, telegram_id=str(call.from_user.id), is_patient=True
+        )
+        await call.message.answer(
+            text="Tamam"
+        )
 
     if call.data == "re-enter":
-        pass
+        await call.message.answer(
+            text="Исм шарифингизни киритинг.\n\n<b>Намуна: Тешабоева Гавҳар Дарвишовна</b>"
+        )
+        await UserAnketa.FULL_NAME.set()
 
 
 @dp.message_handler(state=UserAnketa.FULL_NAME, content_types=types.ContentType.TEXT)
@@ -100,34 +121,8 @@ async def handle_eeg_result(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=UserAnketa.PHONE, content_types=types.ContentType.TEXT)
 async def handle_phone_number(message: types.Message, state: FSMContext):
-    data = await state.get_data()
-
-    eysenc = data['ayzenk']
-    yakhin = data['yaxin']
-    leo = data['leongard']
-
-    # Patient jadvaliga user ma'lumotlarini qo'shish
-    patient_id = await adldb.add_patient(
-        telegram_id=str(message.from_user.id), name=data['user_full_name'], phone=message.text,
-        marital_status=data['marital_status'], absence_children=data['absence_children'], work=data['work'],
-        result_eeg=data['eeg_result']
-    )
-
-    await adldb.add_to_tt_eysenc(
-        patient_id=patient_id, temperament=eysenc['temperament'], extraversion=eysenc['extroversion'],
-        neuroticism=eysenc['neuroticism']
-    )
-
-    await adldb.add_to_tt_yakhin(
-        patient_id=patient_id, neurotic_detected=str(yakhin['neurotic_detected']), anxiety=yakhin['anxiety'],
-        depression=yakhin['depression'], asthenia=yakhin['asthenia'], hysteroid_response=yakhin['hysteroid_response'],
-        obsessive_phobic=yakhin['obsessive_phobic'], vegetative=yakhin['vegetative']
-    )
-
-    await adldb.add_tt_leonhard(
-        patient_id=patient_id, hysteroid=leo['isteroid'], pedantic=leo['pedantic'], rigid=leo['rigid'],
-        epileptoid=leo['epileptoid'], hyperthymic=leo['gipertim'], dysthymic=leo['distimic'],
-        anxious=leo['danger'], cyclothymic=leo['ciclomistic'], affective=leo['affectexaltir'], emotive=leo['emotiv']
+    await handle_add_results(
+        state=state, telegram_id=str(message.from_user.id), phone=message.text
     )
     await message.answer(
         text="Tamam"

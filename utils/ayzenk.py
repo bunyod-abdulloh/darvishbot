@@ -94,7 +94,7 @@ async def handle_end_of_test(call: types.CallbackQuery, state: FSMContext):
         if not await check_user_test(call=call):
             return
 
-        await call.message.answer(
+        await call.message.edit_text(
             text=f"Сўровнома якунланди!\n\nТест тури: Айзенк | Шахсият сўровномаси\n"
                  f"\n\n{text}\n\n<a href='https://telegra.ph/Ajzenk-SHahsiyat-s%D1%9Erovnomasiga-izo%D2%B3-07-20'>Кўрсатмалар</a>",
             reply_markup=sign_up_to_consultation()
