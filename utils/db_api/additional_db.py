@@ -55,3 +55,35 @@ class AdditionalDB:
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)"""
         return await self.db.execute(sql, patient_id, hysteroid, pedantic, rigid, epileptoid, hyperthymic, dysthymic,
                                      anxious, cyclothymic, affective, emotive, execute=True)
+
+    async def set_fullname(self, fullname, telegram_id):
+        sql = """UPDATE clinic_patient SET name = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, fullname, telegram_id, execute=True)
+
+    async def set_gender(self, gender, telegram_id):
+        sql = """UPDATE clinic_patient SET gender = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, gender, telegram_id, execute=True)
+
+    async def set_age(self, age, telegram_id):
+        sql = """UPDATE clinic_patient SET age = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, age, telegram_id, execute=True)
+
+    async def set_phone(self, phone, telegram_id):
+        sql = """UPDATE clinic_patient SET phone = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, phone, telegram_id, execute=True)
+
+    async def set_marital_status(self, marital_status, telegram_id):
+        sql = """UPDATE clinic_patient SET marital_status = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, marital_status, telegram_id, execute=True)
+
+    async def set_absence_children(self, absence_children, telegram_id):
+        sql = """UPDATE clinic_patient SET absence_children = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, absence_children, telegram_id, execute=True)
+
+    async def set_work(self, work, telegram_id):
+        sql = """UPDATE clinic_patient SET work = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, work, telegram_id, execute=True)
+
+    async def set_result_eeg(self, result_eeg, telegram_id):
+        sql = """UPDATE clinic_patient SET result_eeg = $1 WHERE tg_id = $2"""
+        return await self.db.execute(sql, result_eeg, telegram_id, execute=True)

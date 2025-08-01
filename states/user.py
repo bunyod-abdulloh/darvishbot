@@ -9,3 +9,14 @@ class UserAnketa(StatesGroup):
     WORK = State()
     EEG = State()
     PHONE = State()
+
+
+class UserEditDatas(StatesGroup):
+    EDIT_FULLNAME = State()
+    EDIT_GENDER = State()
+    EDIT_AGE = State()
+    EDIT_MARITAL_STATUS = State()
+    EDIT_ABSENCE_CHILDREN = State()
+    EDIT_WORK = State()
+    EDIT_EEG = State()
+    EDIT_PHONE = State()
