@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
+
 inline_keyboard = [[
     InlineKeyboardButton(text="✅ Yes", callback_data='yes'),
     InlineKeyboardButton(text="❌ No", callback_data='no')
@@ -87,6 +88,34 @@ def absence_children_ikb():
         )
     )
     return btn
+
+
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from datetime import datetime
+
+
+def create_sorted_date_inline_keyboard(dates_by_day: dict[str, list[str]]) -> InlineKeyboardMarkup:
+    all_dates = []
+
+    # Barcha sanalarni yig‘ish va datetime formatga aylantirib saqlash
+    for key, value in dates_by_day.items():
+        for date_str in value:
+            all_dates.append((key, date_str, datetime.strptime(date_str, "%d-%m-%Y")))
+
+    # Sana bo‘yicha sortlash
+    all_dates.sort(key=lambda x: x[2])
+
+    # Inline tugmalar yaratish
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    for key, date_str, _ in all_dates:
+        keyboard.insert(
+            InlineKeyboardButton(
+                text=date_str,
+                callback_data=f"date:{key}:{date_str}"
+            )
+        )
+
+    return keyboard
 
 
 # def key_returner_selected(items, table_name, current_page, all_pages, selected):

@@ -87,3 +87,25 @@ class AdditionalDB:
     async def set_result_eeg(self, result_eeg, telegram_id):
         sql = """UPDATE clinic_patient SET result_eeg = $1 WHERE tg_id = $2"""
         return await self.db.execute(sql, result_eeg, telegram_id, execute=True)
+
+    async def get_doctor_work_days(self):
+        sql = """SELECT wd.id, wd.code, wd.name, wd.start_hour, wd.end_hour FROM clinic_workday wd 
+            JOIN clinic_doctor d ON wd.doctor_id = d.id WHERE d.name = 'Gavhar Darvish' ORDER BY wd.start_hour"""
+        return await self.db.execute(sql, fetch=True)
+
+    async def get_doctor_time(self, formatted_date):
+        sql = f"""
+                SELECT 
+                    a.id AS appointment_id,                    
+                    TO_CHAR(a.appointment_date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tashkent', 'HH24:MI') AS appointment_time,
+                    a.age_group,
+                    a.consultation_duration,
+                    a.doctor_notes,
+                    d.name AS doctor_name
+                FROM clinic_appointment a
+                JOIN clinic_doctor d ON a.doctor_id = d.id
+                WHERE a.doctor_id = d.id
+                  AND a.appointment_date::date = $1
+                ORDER BY a.appointment_date
+            """
+        return await self.db.execute(sql, formatted_date, fetch=True)

@@ -1,3 +1,5 @@
+from datetime import time
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -128,6 +130,61 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
     await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
     return None
 
+
+def float_to_time_str(hour_float):
+    hours = int(hour_float)
+    minutes = int((hour_float - hours) * 60)
+    return time(hour=hours, minute=minutes).strftime("%H:%M")
+
+
+week_days = {
+    "dushanba": "Душанба",
+    "seshanba": "Сешанба",
+    "chorshanba": "Чоршанба",
+    "payshanba": "Пайшанба",
+    "juma": "Жума",
+    "shanba": "Шанба",
+    "yakshanba": "Якшанба"
+}
+
+
+def generate_workday_text(doctor: list) -> str:
+    lines = ["<b>Иш кун ва вақтлари</b>\n"]
+    for day in doctor:
+        start_hour = float_to_time_str(hour_float=day['start_hour'])
+        end_hour = float_to_time_str(hour_float=day['end_hour'])
+        day_name = week_days.get(day['code'], day['code'].capitalize())
+        lines.append(f"{day_name} | {start_hour} - {end_hour}")
+    return "\n".join(lines)
+
+
+from datetime import datetime, timedelta
+
+
+def get_upcoming_work_dates(workday_codes: list[str], days_ahead=30) -> dict[str, list[str]]:
+    day_code_to_weekday = {
+        "dushanba": 0,
+        "seshanba": 1,
+        "chorshanba": 2,
+        "payshanba": 3,
+        "juma": 4,
+        "shanba": 5,
+        "yakshanba": 6
+    }
+
+    today = datetime.today().date()
+    dates_by_day = {code: [] for code in workday_codes}
+
+    for i in range(days_ahead):
+        current_date = today + timedelta(days=i)
+        weekday = current_date.weekday()
+
+        for code in workday_codes:
+            if day_code_to_weekday[code] == weekday:
+                date_str = current_date.strftime("%d-%m-%Y")
+                dates_by_day[code].append(date_str)
+
+    return dates_by_day
 
 # import csv
 #
