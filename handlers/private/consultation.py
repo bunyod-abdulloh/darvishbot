@@ -2,63 +2,21 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from keyboards.inline.user_ibuttons import confirm_reenter_ibtn, marital_status_ikb, absence_children_ikb
-from loader import dp, adldb
-from services.helper_functions import handle_add_results
+from keyboards.inline.user_ibuttons import marital_status_ikb, absence_children_ikb
+from loader import dp
+from services.helper_functions import handle_add_results, check_patient_datas
 from states.user import UserAnketa
+
+
+@dp.message_handler(F.text == "✍️ Консультацияга ёзилиш", state="*")
+async def handle_sign_up_consultation(message: types.Message, state: FSMContext):
+    await check_patient_datas(event=message, state=state)
 
 
 @dp.callback_query_handler(F.data == "consultation_test", state="*")
 async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext):
     await call.answer(cache_time=0)
-    data = await state.get_data()
-    tests = ['ayzenk', 'leongard', 'yaxin']
-
-    missing = [t for t in tests if t not in data]
-    if missing:
-        missing_text = "\n".join(f"{i + 1}. {t.capitalize()}" for i, t in enumerate(missing))
-        await call.message.answer(text=f"Консультацияга ёзилиш учун барча тестларни ишлашингиз лозим!\n\n"
-                                       f"Қуйидаги тестлар ишланмади:\n\n{missing_text}")
-        return
-
-    patient = await adldb.get_patient(telegram_id=str(call.from_user.id))
-
-    if patient:
-        full_name = patient[3]
-        gender = patient[4]
-        age = patient[5]
-        marital_status = patient[7]
-        absence_children = patient[8]
-        work = patient[9]
-        result_eeg = patient[10]
-        phone = patient[6]
-
-        patient_dict = {
-            "male": "Эркак",
-            "female": "Аёл",
-            "married": "Турмуш қурган",
-            "unmarried": "Турмуш қурмаган",
-            "yes": "Бор",
-            "no": "Йўқ"
-        }
-        await call.message.answer(
-            text=f"Маълумотларингиз сақланган\n\n"
-                 f"1. Исм шариф: {full_name}\n"
-                 f"2. Жинс: {patient_dict[gender]}\n"
-                 f"3. Ёш: {age}\n"
-                 f"4. Оилавий ҳолат: {patient_dict[marital_status]}\n"
-                 f"5. Фарзандлар: {patient_dict[absence_children]}\n"
-                 f"6. Иш соҳаси: {work.capitalize()}\n"
-                 f"7. ЭЭГ натижаси: {result_eeg.capitalize()}\n"
-                 f"8. Телефон рақам: {phone}\n\n"
-                 f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмасини босинг",
-            reply_markup=confirm_reenter_ibtn()
-        )
-    else:
-        await call.message.answer(
-            text="Исм шарифингизни киритинг.\n\n<b>Намуна: Тешабоева Гавҳар Дарвишовна</b>"
-        )
-        await UserAnketa.FULL_NAME.set()
+    await check_patient_datas(event=call, state=state)
 
 
 @dp.callback_query_handler(F.data == "confirm", state="*")

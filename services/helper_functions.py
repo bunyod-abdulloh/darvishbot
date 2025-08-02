@@ -2,16 +2,16 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from keyboards.default.user_buttons import main_dkb
+from keyboards.inline.user_ibuttons import confirm_reenter_ibtn
 from loader import udb, adldb
+from states.user import UserAnketa
 
 
 async def check_user_test(call: types.CallbackQuery) -> bool:
     check_user = await udb.check_user(telegram_id=str(call.from_user.id))
     if not check_user:
-        await call.message.answer(
-            text="Тест ишлаш учун маълумотларингиз тўлиқ киритилмаган!",
-            reply_markup=main_dkb
-        )
+        text = "Тест ишлаш учун маълумотларингиз тўлиқ киритилмаган!"
+        await call.message.answer(text=text, reply_markup=main_dkb)
         return False
     return True
 
@@ -23,13 +23,10 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
     yakhin = data['yaxin']
     leo = data['leongard']
 
-    patient_id = None
-
     if is_patient:
         patient_id = await adldb.get_patient(
             telegram_id=telegram_id
         )
-        print(patient_id)
     else:
         # Patient jadvaliga user ma'lumotlarini qo'shish
         patient_id = await adldb.add_patient(
@@ -54,6 +51,83 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
         epileptoid=leo['epileptoid'], hyperthymic=leo['gipertim'], dysthymic=leo['distimic'],
         anxious=leo['danger'], cyclothymic=leo['ciclomistic'], affective=leo['affectexaltir'], emotive=leo['emotiv']
     )
+
+
+async def missing_test(state: FSMContext) -> str | None:
+    data = await state.get_data()
+    tests = ['ayzenk', 'leongard', 'yaxin']
+
+    # Tarjimasi
+    test_names = {
+        'ayzenk': 'Айзенк | Темперамент аниқлаш',
+        'leongard': 'Леонгард сўровномаси',
+        'yaxin': 'Яхин Менделевич сўровномаси'
+    }
+
+    missing = [t for t in tests if t not in data]
+    if missing:
+        missing_text = "\n".join(f"{i + 1}. {test_names.get(t, t)}" for i, t in enumerate(missing))
+        return (f"Консультацияга ёзилиш учун барча тестларни ишлашингиз лозим!\n\n"
+                f"Қуйидаги тестлар ишланмади:\n\n{missing_text}")
+    return None
+
+
+async def check_patient_datas(event: types.Message | types.CallbackQuery, state: FSMContext) -> str | None:
+    # 1. Message obyektini ajratib olish
+    if isinstance(event, types.CallbackQuery):
+        user_id = event.from_user.id
+        message_obj = event.message
+    else:
+        user_id = event.from_user.id
+        message_obj = event
+
+    # 2. Testlar tekshiruvi
+    test_error = await missing_test(state)
+    if test_error:
+        await message_obj.answer(test_error)
+        return None
+
+    # 3. Ma'lumotlarni olish
+    patient = await adldb.get_patient(telegram_id=str(user_id))
+    if not patient:
+        await message_obj.edit_text(
+            text="Исм шарифингизни киритинг.\n\n<b>Намуна: Тешабоева Гавҳар Дарвишовна</b>"
+        )
+        await UserAnketa.FULL_NAME.set()
+        return None
+
+    full_name = patient[3]
+    gender = patient[4]
+    age = patient[5]
+    marital_status = patient[7]
+    absence_children = patient[8]
+    work = patient[9]
+    result_eeg = patient[10]
+    phone = patient[6]
+
+    patient_dict = {
+        "male": "Эркак",
+        "female": "Аёл",
+        "married": "Турмуш қурган",
+        "unmarried": "Турмуш қурмаган",
+        "yes": "Бор",
+        "no": "Йўқ"
+    }
+
+    text = (f"Маълумотларингиз сақланган\n\n"
+            f"1. Исм шариф: {full_name}\n"
+            f"2. Жинс: {patient_dict.get(gender, gender)}\n"
+            f"3. Ёш: {age}\n"
+            f"4. Оилавий ҳолат: {patient_dict.get(marital_status, marital_status)}\n"
+            f"5. Фарзандлар: {patient_dict.get(absence_children, absence_children)}\n"
+            f"6. Иш соҳаси: {work.capitalize()}\n"
+            f"7. ЭЭГ натижаси: {result_eeg.capitalize()}\n"
+            f"8. Телефон рақам: {phone}\n\n"
+            f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмани босинг")
+
+    await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
+    return None
+
 
 # import csv
 #

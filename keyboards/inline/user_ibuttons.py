@@ -10,7 +10,7 @@ are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 def sign_up_to_consultation():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.add(InlineKeyboardButton(
-        text="Консультацияга ёзилиш", callback_data=f"consultation_test"))
+        text="✍️ Консультацияга ёзилиш", callback_data=f"consultation_test"))
     return btn
 
 
@@ -232,7 +232,7 @@ def ayzenktemp_ikb(testdb):
             ],
             [
                 InlineKeyboardButton(
-                    text="⬅️ Ortga", callback_data=f"ayztempback:{testdb['question_number'] - 1}"
+                    text="⬅️ Ортга", callback_data=f"ayztempback:{testdb['question_number'] - 1}"
                 )
             ]
         ]
@@ -262,7 +262,7 @@ def leotest_ikb(testdb):
             ],
             [
                 InlineKeyboardButton(
-                    text="⬅️ Ortga", callback_data=f"leoback:{testdb['question_number'] - 1}"
+                    text="⬅️ Ортга", callback_data=f"leoback:{testdb['question_number'] - 1}"
                 )
             ]
         ]
@@ -294,7 +294,7 @@ def test_ibuttons(testdb):
             ],
             [
                 InlineKeyboardButton(
-                    text="⬅️ Ortga", callback_data=f"yaxinback:{testdb['id'] - 1}"
+                    text="⬅️ Ортга", callback_data=f"yaxinback:{testdb['id'] - 1}"
                 )
             ]
         ]

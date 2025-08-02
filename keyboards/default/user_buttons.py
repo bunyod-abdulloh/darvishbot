@@ -10,6 +10,11 @@ main_dkb = ReplyKeyboardMarkup(
             KeyboardButton(text="🎙 Суҳбат ва лойиҳалар"),
             KeyboardButton(text="📝 Мақолалар")
         ],
+        [
+            KeyboardButton(
+                text="✍️ Консультацияга ёзилиш"
+            )
+        ]
     ],
     resize_keyboard=True,
     one_time_keyboard=True
@@ -44,3 +49,8 @@ interviews_cbuttons = ReplyKeyboardMarkup(
     resize_keyboard=True,
     one_time_keyboard=True
 )
+
+
+def sign_up_consultation_dkb():
+    btn = ReplyKeyboardMarkup(resize_keyboard=True)
+    btn.add()
