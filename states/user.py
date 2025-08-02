@@ -6,6 +6,8 @@ class UserAnketa(StatesGroup):
     add_phone = State()
     GET_AGE = State()
     FULL_NAME = State()
+    MARITAL_STATUS = State()
+    ABSENCE_CHILDREN = State()
     WORK = State()
     EEG = State()
     PHONE = State()

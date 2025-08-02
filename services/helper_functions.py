@@ -29,6 +29,7 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
         patient_id = await adldb.get_patient(
             telegram_id=telegram_id
         )
+        print(patient_id)
     else:
         # Patient jadvaliga user ma'lumotlarini qo'shish
         patient_id = await adldb.add_patient(

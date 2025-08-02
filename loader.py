@@ -19,7 +19,8 @@ storage = RedisStorage2(
     host='localhost',
     port=6379,
     db=5,
-    state_ttl=3600
+    state_ttl=3600,
+    data_ttl=3600
 )
 
 dp = Dispatcher(bot, storage=storage)

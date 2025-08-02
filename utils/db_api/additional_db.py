@@ -10,8 +10,8 @@ class AdditionalDB:
         return await self.db.execute(sql, fetchrow=True)
 
     async def get_patient(self, telegram_id):
-        sql = """SELECT * FROM clinic_patient WHERE tg_id = $1"""
-        return await self.db.execute(sql, telegram_id, fetchrow=True)
+        sql = """SELECT id FROM clinic_patient WHERE tg_id = $1"""
+        return await self.db.execute(sql, telegram_id, fetchval=True)
 
     async def add_patient(self, telegram_id, name, phone, marital_status, absence_children, work, result_eeg):
         sql = """
