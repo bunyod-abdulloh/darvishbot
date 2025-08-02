@@ -69,7 +69,7 @@ async def handle_confirm_reenter(call: types.CallbackQuery, state: FSMContext):
             state=state, telegram_id=str(call.from_user.id), is_patient=True
         )
         await call.message.answer(
-            text="Tamam"
+            text="Маълумотлар қабул қилинди!"
         )
 
     if call.data == "re-enter":
@@ -125,5 +125,5 @@ async def handle_phone_number(message: types.Message, state: FSMContext):
         state=state, telegram_id=str(message.from_user.id), phone=message.text
     )
     await message.answer(
-        text="Tamam"
+        text="Маълумотлар қабул қилинди!"
     )
