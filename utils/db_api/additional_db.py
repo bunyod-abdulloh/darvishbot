@@ -93,19 +93,14 @@ class AdditionalDB:
             JOIN clinic_doctor d ON wd.doctor_id = d.id WHERE d.name = 'Gavhar Darvish' ORDER BY wd.start_hour"""
         return await self.db.execute(sql, fetch=True)
 
-    async def get_doctor_time(self, formatted_date):
-        sql = f"""
-                SELECT 
-                    a.id AS appointment_id,                    
-                    TO_CHAR(a.appointment_date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tashkent', 'HH24:MI') AS appointment_time,
-                    a.age_group,
-                    a.consultation_duration,
-                    a.doctor_notes,
-                    d.name AS doctor_name
-                FROM clinic_appointment a
-                JOIN clinic_doctor d ON a.doctor_id = d.id
-                WHERE a.doctor_id = d.id
-                  AND a.appointment_date::date = $1
-                ORDER BY a.appointment_date
-            """
+    async def get_doctor_time(self, formatted_date: str):
+        sql = """
+            SELECT
+                TO_CHAR(a.appointment_date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tashkent', 'HH24:MI') AS appointment_time                    
+            FROM clinic_appointment a
+            JOIN clinic_doctor d ON a.doctor_id = d.id
+            WHERE a.appointment_date::date = $1
+              AND d.name = 'Gavhar Darvish'
+            ORDER BY a.appointment_date
+        """
         return await self.db.execute(sql, formatted_date, fetch=True)

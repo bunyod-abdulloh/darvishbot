@@ -1,5 +1,4 @@
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -8,7 +7,8 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
     start = datetime.strptime(start_str, "%H:%M")
     end = datetime.strptime(end_str, "%H:%M")
 
-    busy_set = set(busy_times)  # ["10:00", "13:30", ...]
+    busy_set = set(busy_times)  # faqat aynan band bo‘lgan vaqtlar
+
     keyboard = InlineKeyboardMarkup(row_width=3)
 
     current = start
@@ -22,8 +22,13 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
                 )
             )
         current += timedelta(minutes=30)
-
+    keyboard.add(
+        InlineKeyboardButton(
+            text="⬅️ Ортга", callback_data="consultation_back1"
+        )
+    )
     return keyboard
+
 
 
 def sign_up_to_consultation():
@@ -131,5 +136,9 @@ def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[st
                 callback_data=f"date_{key}_{date_str}_{time}"
             )
         )
-
+    keyboard.add(
+        InlineKeyboardButton(
+            text="⬅️ Ортга", callback_data="consultation_back1"
+        )
+    )
     return keyboard

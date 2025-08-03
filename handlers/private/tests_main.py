@@ -3,7 +3,8 @@ from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
 from keyboards.default.user_buttons import tests_main_dkb
-from keyboards.inline.user_ibuttons import select_gender_btn
+from keyboards.inline.consultation_ikbs import select_gender_btn
+
 from loader import dp, udb
 from states.user import UserAnketa
 

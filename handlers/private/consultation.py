@@ -4,7 +4,8 @@ from magic_filter import F
 
 from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb
 from loader import dp
-from services.helper_functions import handle_add_results, check_patient_datas
+from services.consultation import check_patient_datas
+from services.helper_functions import handle_add_results
 from states.user import UserAnketa
 
 
