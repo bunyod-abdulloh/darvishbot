@@ -1,7 +1,7 @@
 from aiogram import types
 from magic_filter import F
 
-from keyboards.inline.user_ibuttons import marital_status_ikb, absence_children_ikb, select_gender_btn
+from keyboards.inline.consultation_ikbs import select_gender_btn
 from loader import dp, adldb
 from states.user import UserEditDatas
 

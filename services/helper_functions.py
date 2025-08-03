@@ -4,7 +4,8 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from keyboards.default.user_buttons import main_dkb
-from keyboards.inline.user_ibuttons import confirm_reenter_ibtn
+from keyboards.inline.consultation_ikbs import confirm_reenter_ibtn
+
 from loader import udb, adldb
 from states.user import UserAnketa
 
@@ -161,7 +162,15 @@ def generate_workday_text(doctor: list) -> str:
 from datetime import datetime, timedelta
 
 
-def get_upcoming_work_dates(workday_codes: list[str], days_ahead=30) -> dict[str, list[str]]:
+def get_upcoming_work_dates_with_hours(doctor: list[dict], days_ahead=30) -> dict[str, dict[str, list[str] | list[str]]]:
+    """
+    doctor - quyidagi ko‘rinishda bo‘ladi:
+    [
+        {'code': 'dushanba', 'start_hour': 9.0, 'end_hour': 17.0},
+        {'code': 'seshanba', 'start_hour': 9.0, 'end_hour': 17.0},
+        ...
+    ]
+    """
     day_code_to_weekday = {
         "dushanba": 0,
         "seshanba": 1,
@@ -173,16 +182,24 @@ def get_upcoming_work_dates(workday_codes: list[str], days_ahead=30) -> dict[str
     }
 
     today = datetime.today().date()
-    dates_by_day = {code: [] for code in workday_codes}
+    dates_by_day = {}
 
-    for i in range(days_ahead):
-        current_date = today + timedelta(days=i)
-        weekday = current_date.weekday()
+    for day in doctor:
+        code = day['code']
+        start_hour = float_to_time_str(day['start_hour'])
+        end_hour = float_to_time_str(day['end_hour'])
+        weekday_number = day_code_to_weekday[code]
 
-        for code in workday_codes:
-            if day_code_to_weekday[code] == weekday:
-                date_str = current_date.strftime("%d-%m-%Y")
-                dates_by_day[code].append(date_str)
+        dates = []
+        for i in range(days_ahead):
+            current_date = today + timedelta(days=i)
+            if current_date.weekday() == weekday_number:
+                dates.append(current_date.strftime("%d-%m-%Y"))
+
+        dates_by_day[code] = {
+            "dates": dates,
+            "time": f"{start_hour}-{end_hour}"
+        }
 
     return dates_by_day
 

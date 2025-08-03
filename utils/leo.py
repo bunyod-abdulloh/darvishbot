@@ -1,7 +1,8 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.user_ibuttons import leotest_ikb, sign_up_to_consultation
+from keyboards.inline.consultation_ikbs import sign_up_to_consultation
+from keyboards.inline.user_ibuttons import leotest_ikb
 from loader import leodb, stdb
 from services.error_service import notify_exception_to_admin
 
@@ -64,7 +65,7 @@ async def leo_result(call: types.CallbackQuery):
 
     # Foydalanuvchining umumiy natijasini statistika uchun bazaga yozamiz
     await stdb.set_test_result(telegram_id=str(call.from_user.id), test_type="Leongard", result=dominant_type)
-    print(leo_state)
+
     return leo_state
 
 

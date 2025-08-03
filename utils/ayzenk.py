@@ -3,8 +3,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from keyboards.inline.consultation_ikbs import sign_up_to_consultation
 # from data.config import ADMINS, ADMIN_GROUP
-from keyboards.inline.user_ibuttons import ayzenktemp_ikb, sign_up_to_consultation
+from keyboards.inline.user_ibuttons import ayzenktemp_ikb
 from loader import stdb, ayzdb
 from services.error_service import notify_exception_to_admin
 from services.helper_functions import check_user_test

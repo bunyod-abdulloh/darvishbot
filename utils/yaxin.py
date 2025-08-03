@@ -4,7 +4,7 @@ import asyncio
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.user_ibuttons import sign_up_to_consultation
+from keyboards.inline.consultation_ikbs import sign_up_to_consultation
 from loader import yxndb, stdb
 
 

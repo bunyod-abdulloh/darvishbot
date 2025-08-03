@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from keyboards.inline.user_ibuttons import marital_status_ikb, absence_children_ikb
+from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb
 from loader import dp
 from services.helper_functions import handle_add_results, check_patient_datas
 from states.user import UserAnketa
