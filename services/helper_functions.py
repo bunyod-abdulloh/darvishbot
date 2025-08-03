@@ -31,12 +31,12 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
         )
     else:
         # Patient jadvaliga user ma'lumotlarini qo'shish
-        patient_id = await adldb.add_patient(
+        patient_id = (await adldb.add_patient(
             telegram_id=telegram_id, name=data['user_full_name'], phone=phone,
             marital_status=data['marital_status'], absence_children=data['absence_children'], work=data['work'],
             result_eeg=data['eeg_result']
-        )
-
+        ))['id']
+    print(patient_id)
     await adldb.add_to_tt_eysenc(
         patient_id=patient_id, temperament=eysenc['temperament'], extraversion=eysenc['extroversion'],
         neuroticism=eysenc['neuroticism']

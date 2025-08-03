@@ -49,7 +49,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
         )
         await UserAnketa.FULL_NAME.set()
         return None
-
+    print(patient)
     full_name = patient[3]
     gender = patient[4]
     age = patient[5]

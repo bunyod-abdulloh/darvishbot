@@ -11,6 +11,7 @@ class UserAnketa(StatesGroup):
     WORK = State()
     EEG = State()
     PHONE = State()
+    PAYMENT = State()
 
 
 class UserEditDatas(StatesGroup):
