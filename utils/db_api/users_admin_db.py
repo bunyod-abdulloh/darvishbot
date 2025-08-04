@@ -39,6 +39,10 @@ class UsersDB:
         sql = f"SELECT * FROM bot_users WHERE telegram_id='{telegram_id}'"
         return await self.db.execute(sql, fetchrow=True)
 
+    async def get_user_age(self, telegram_id):
+        sql = f"SELECT age FROM bot_users WHERE telegram_id=$1"
+        return await self.db.execute(sql, telegram_id, fetchval=True)
+
     async def check_user(self, telegram_id):
         sql = f"""
             SELECT EXISTS (

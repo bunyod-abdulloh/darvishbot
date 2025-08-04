@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -14,7 +16,7 @@ async def check_user_test(call: types.CallbackQuery) -> bool:
     return True
 
 
-async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bool = False, phone: str = None):
+async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bool = False):
     data = await state.get_data()
 
     eysenc = data['ayzenk']
@@ -28,7 +30,7 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
     else:
         # Patient jadvaliga user ma'lumotlarini qo'shish
         patient_id = await adldb.add_patient(
-            telegram_id=telegram_id, name=data['user_full_name'], phone=phone,
+            telegram_id=telegram_id, name=data['user_full_name'], phone=data['phone'],
             marital_status=data['marital_status'], absence_children=data['absence_children'], work=data['work'],
             result_eeg=data['eeg_result']
         )
@@ -48,6 +50,25 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
         patient_id=patient_id, hysteroid=leo['isteroid'], pedantic=leo['pedantic'], rigid=leo['rigid'],
         epileptoid=leo['epileptoid'], hyperthymic=leo['gipertim'], dysthymic=leo['distimic'],
         anxious=leo['danger'], cyclothymic=leo['ciclomistic'], affective=leo['affectexaltir'], emotive=leo['emotiv']
+    )
+
+    # Appointments jadvaliga ma'lumotlarni kiritish
+
+    consultation_date = data.get("consultation_date")
+    consultation_time = data.get("consultation_time")
+
+    appointment_datetime = datetime.strptime(f"{consultation_date} {consultation_time}", "%d-%m-%Y %H:%M")
+
+    age = int(await udb.get_user_age(telegram_id=telegram_id))
+
+    if age >= 17:
+        age_group = "adult"
+    else:
+        age_group = "child"
+
+    await adldb.add_to_appointments(
+        patient_id=patient_id, doctor_id=doctor_id, company_id=1, consultation_duration=consultation_duration,
+        age_group=age_group, appointment_date=appointment_datetime
     )
 
 

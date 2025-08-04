@@ -62,7 +62,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
     # 3. Ma'lumotlarni olish
     patient = await adldb.get_patient(telegram_id=str(user_id))
     if not patient:
-        await message_obj.edit_text(
+        await message_obj.answer(
             text=f"{consultation_text}\n\nИсм шарифингизни киритинг.\n\n<b>Намуна: Тешабоева Гавҳар Дарвишовна</b>"
         )
         await UserAnketa.FULL_NAME.set()

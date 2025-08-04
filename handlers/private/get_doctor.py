@@ -17,13 +17,15 @@ data_ = {'yaxin': {'anxiety': 7.81, 'depression': 7.79, 'asthenia': 9.9, 'hyster
                    'obsessive_phobic': 6.03, 'vegetative': 17.23, 'neurotic_detected': False},
          'ayzenk': {'temperament': 'Xolerik', 'extroversion': 15.0, 'neuroticism': 24.0},
          'leongard': {'isteroid': 22, 'pedantic': 22, 'rigid': 18, 'epileptoid': 24, 'gipertim': 24, 'distimic': 15,
-                      'danger': 21, 'ciclomistic': 24, 'affectexaltir': 24, 'emotiv': 21},
-         'consultation_date': '04-08-2025', 'consultation_day': 'dushanba', 'consultation_time': '09:00',
-         'consultation_duration': '10'}
+                      'danger': 21, 'ciclomistic': 24, 'affectexaltir': 24, 'emotiv': 21}}
 
 
-@dp.message_handler(F.text == "sasa", state="<b>")
-async def handle_get_doctor(message: types.Message):
+@dp.message_handler(F.text == "sasa", state="*")
+async def handle_get_doctor(message: types.Message, state: FSMContext):
+    await state.update_data(yaxin=data_['yaxin'],
+                            ayzenk=data_['ayzenk'],
+                            leongard=data_['leongard'])
+
     await message.answer(
         text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
     )
@@ -101,9 +103,15 @@ async def handle_select_time(call: types.CallbackQuery, state: FSMContext):
 async def handle_consultation_chek(message: types.Message, state: FSMContext):
 
     data = await state.get_data()
+    print(f"{data}\n\n{len(data)}")
 
     if len(data) == 7:
         pass
+
+    elif len(data) == 13:
+        await handle_add_results(
+            state=state, telegram_id=str(message.from_user.id)
+        )
 
     await message.answer(
         text=f"<code>{message.photo[-1].file_id}</code>"
@@ -155,21 +163,12 @@ async def handle_ada(message: types.Message, state: FSMContext):
                 patient_id=patient['id'])
         )
 
-        # Appointments jadvaliga ma'lumotlarni kiritish
 
-        appointment_datetime = datetime.strptime(f"{consultation_date} {consultation_time}", "%d-%m-%Y %H:%M")
 
-        if age >= 17:
-            age_group = "adult"
-        else:
-            age_group = "child"
-
-        await adldb.add_to_appointments(
-            patient_id=patient_id, doctor_id=doctor_id, company_id=1, consultation_duration=consultation_duration,
-            age_group=age_group, appointment_date=appointment_datetime
+    elif len(data) == 13:
+        await handle_add_results(
+            state=state, telegram_id=str(message.from_user.id)
         )
-
-    elif len(data) == 14:
         pass
 
     else:
