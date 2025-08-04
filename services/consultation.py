@@ -69,10 +69,10 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
         return None
 
     full_name = patient[3]
-    gender = patient[4]
+    gender = patient_dict[patient[4]]
     age = patient[5]
-    marital_status = patient[7]
-    absence_children = patient[8]
+    marital_status = patient_dict[patient[7]]
+    absence_children = patient_dict[patient[8]]
     work = patient[9]
     result_eeg = patient[10]
     phone = patient[6]
@@ -90,7 +90,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
             f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмани босинг")
 
     await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
-    await state.update_data(yes_data=True)
+
     return None
 
 

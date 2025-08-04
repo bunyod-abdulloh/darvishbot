@@ -145,17 +145,17 @@ def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[st
 
 def consultation_duration__ikb():
     btn = InlineKeyboardMarkup()
-    durations = ['10', '20', '30', '40']
+    durations = ['10', '20', '30']
 
     for duration in durations:
         btn.add(
             InlineKeyboardButton(
-                text=duration, callback_data=f"duration_{duration}"
+                text=f"{duration} дақиқа", callback_data=f"duration_{duration}"
             )
         )
-        btn.add(
-            InlineKeyboardButton(
-                text="⬅️ Ортга", callback_data="consultation_back1"
-            )
+    btn.add(
+        InlineKeyboardButton(
+            text="⬅️ Ортга", callback_data="consultation_back1"
         )
+    )
     return btn

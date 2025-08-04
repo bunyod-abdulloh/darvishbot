@@ -9,6 +9,10 @@ class AdditionalDB:
         sql = """ SELECT name FROM clinic_doctor """
         return await self.db.execute(sql, fetchrow=True)
 
+    async def get_doctor_id(self):
+        sql = """ SELECT id FROM clinic_doctor WHERE name = 'Gavhar Darvish' """
+        return await self.db.execute(sql, fetchval=True)
+
     async def get_patient(self, telegram_id):
         sql = """SELECT * FROM clinic_patient WHERE tg_id = $1"""
         return await self.db.execute(sql, telegram_id, fetchrow=True)
@@ -55,6 +59,13 @@ class AdditionalDB:
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)"""
         return await self.db.execute(sql, patient_id, hysteroid, pedantic, rigid, epileptoid, hyperthymic, dysthymic,
                                      anxious, cyclothymic, affective, emotive, execute=True)
+
+    async def add_to_appointments(self, patient_id, doctor_id, company_id, consultation_duration, age_group,
+                                  appointment_date):
+        sql = """INSERT INTO clinic_appointment (patient_id, doctor_id, company_id, service_type_id, consultation_duration, age_group, appointment_date) 
+                VALUES ($1, $2, $3, 1, $4, $5, $6)"""
+        return await self.db.execute(sql, patient_id, doctor_id, company_id, consultation_duration, age_group,
+                                     appointment_date, execute=True)
 
     async def set_fullname(self, fullname, telegram_id):
         sql = """UPDATE clinic_patient SET name = $1 WHERE tg_id = $2"""

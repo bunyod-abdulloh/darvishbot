@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb
+from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb, consultation_duration__ikb
 from loader import dp
 from services.consultation import check_patient_datas, handle_consultation_date_sv
 from states.user import UserAnketa
@@ -73,8 +73,10 @@ async def handle_eeg_result(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=UserAnketa.PHONE, content_types=types.ContentType.TEXT)
 async def handle_phone_number(message: types.Message, state: FSMContext):
-    if message.text.startswith("+") and message.text[0:].isdigit():
+    if message.text.startswith("+") and message.text[1:].isdigit():
         await state.update_data(phone=message.text)
-        await handle_consultation_date_sv(event=message)
+        await message.answer(
+            text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
+        )
     else:
         await message.answer(text="Телефон рақамингизни юборинг\n\n<b>Намуна: +998971234567</b>")
