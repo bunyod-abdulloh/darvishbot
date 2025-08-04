@@ -2,11 +2,9 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb, \
-    create_sorted_date_inline_keyboard
-from loader import dp, adldb
-from services.consultation import check_patient_datas, generate_workday_text, get_upcoming_work_dates_with_hours
-from services.helper_functions import handle_add_results
+from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb
+from loader import dp
+from services.consultation import check_patient_datas, handle_consultation_date_sv
 from states.user import UserAnketa
 
 
@@ -21,16 +19,10 @@ async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext)
     await check_patient_datas(event=call, state=state)
 
 
-@dp.callback_query_handler(F.data == "confirm", state="*")
-@dp.callback_query_handler(F.data == "re-enter", state="*")
-async def handle_confirm_reenter(call: types.CallbackQuery, state: FSMContext):
+@dp.callback_query_handler(F.data.in_(("re-enter", "confirm")), state="*")
+async def handle_confirm_reenter(call: types.CallbackQuery):
     if call.data == "confirm":
-        await handle_add_results(
-            state=state, telegram_id=str(call.from_user.id), is_patient=True
-        )
-        await call.message.answer(
-            text="Маълумотлар қабул қилинди!"
-        )
+        await handle_consultation_date_sv(event=call)
 
     if call.data == "re-enter":
         await call.message.answer(
@@ -83,16 +75,6 @@ async def handle_eeg_result(message: types.Message, state: FSMContext):
 async def handle_phone_number(message: types.Message, state: FSMContext):
     if message.text.startswith("+") and message.text[0:].isdigit():
         await state.update_data(phone=message.text)
-        doctor = await adldb.get_doctor_work_days()
-
-        text = generate_workday_text(doctor)
-
-        dates_by_day = get_upcoming_work_dates_with_hours(doctor)
-
-        keyboard = create_sorted_date_inline_keyboard(dates_by_day=dates_by_day)
-
-        await message.answer(
-            text=f"Маълумотлар қабул қилинди! Консультация вақтини танланг\n\n{text}", reply_markup=keyboard
-        )
+        await handle_consultation_date_sv(event=message)
     else:
         await message.answer(text="Телефон рақамингизни юборинг\n\n<b>Намуна: +998971234567</b>")

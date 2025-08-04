@@ -3,10 +3,28 @@ from datetime import datetime, timedelta, time
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.consultation_ikbs import confirm_reenter_ibtn
+from keyboards.inline.consultation_ikbs import confirm_reenter_ibtn, create_sorted_date_inline_keyboard
 from loader import adldb
 from states.user import UserAnketa
 
+patient_dict = {
+    "male": "Эркак",
+    "female": "Аёл",
+    "married": "Турмуш қурган",
+    "unmarried": "Турмуш қурмаган",
+    "yes": "Бор",
+    "no": "Йўқ"
+}
+
+week_days = {
+    "dushanba": "Душанба",
+    "seshanba": "Сешанба",
+    "chorshanba": "Чоршанба",
+    "payshanba": "Пайшанба",
+    "juma": "Жума",
+    "shanba": "Шанба",
+    "yakshanba": "Якшанба"
+}
 
 async def missing_test(state: FSMContext) -> str | None:
     data = await state.get_data()
@@ -49,7 +67,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
         )
         await UserAnketa.FULL_NAME.set()
         return None
-    print(patient)
+
     full_name = patient[3]
     gender = patient[4]
     age = patient[5]
@@ -58,15 +76,6 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
     work = patient[9]
     result_eeg = patient[10]
     phone = patient[6]
-
-    patient_dict = {
-        "male": "Эркак",
-        "female": "Аёл",
-        "married": "Турмуш қурган",
-        "unmarried": "Турмуш қурмаган",
-        "yes": "Бор",
-        "no": "Йўқ"
-    }
 
     text = (f"{consultation_text}\n\n"
             f"Маълумотларингиз сақланган\n\n"
@@ -81,6 +90,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
             f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмани босинг")
 
     await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
+    await state.update_data(yes_data=True)
     return None
 
 
@@ -88,17 +98,6 @@ def float_to_time_str(hour_float):
     hours = int(hour_float)
     minutes = int((hour_float - hours) * 60)
     return time(hour=hours, minute=minutes).strftime("%H:%M")
-
-
-week_days = {
-    "dushanba": "Душанба",
-    "seshanba": "Сешанба",
-    "chorshanba": "Чоршанба",
-    "payshanba": "Пайшанба",
-    "juma": "Жума",
-    "shanba": "Шанба",
-    "yakshanba": "Якшанба"
-}
 
 
 def generate_workday_text(doctor: list) -> str:
@@ -111,7 +110,7 @@ def generate_workday_text(doctor: list) -> str:
     return "\n".join(lines)
 
 
-def get_upcoming_work_dates_with_hours(doctor: list[dict], days_ahead=30) -> dict[
+def get_upcoming_work_dates_with_hours(doctor: list[dict], days_ahead=60) -> dict[
     str, dict[str, list[str] | list[str]]]:
     """
     doctor - quyidagi ko‘rinishda bo‘ladi:
@@ -159,3 +158,22 @@ consultation_text = ("<b>Консультацияга ёзилиш учун қу
                      "2. Шахсий маълумотларни киритиш\n"
                      "3. Консультация учун 50 фоиз тўловни амалга ошириб чек расмини юбориш"
                      )
+
+
+async def handle_consultation_date_sv(event: types.Message | types.CallbackQuery):
+    if isinstance(event, types.CallbackQuery):
+        message_obj = event.message
+    else:
+        message_obj = event
+
+    doctor = await adldb.get_doctor_work_days()
+
+    text = generate_workday_text(doctor)
+
+    dates_by_day = get_upcoming_work_dates_with_hours(doctor)
+
+    keyboard = create_sorted_date_inline_keyboard(dates_by_day=dates_by_day)
+
+    await message_obj.answer(
+        text=f"Маълумотлар қабул қилинди! Консультация вақтини танланг\n\n{text}", reply_markup=keyboard
+    )

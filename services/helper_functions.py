@@ -1,12 +1,8 @@
-from datetime import time
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from keyboards.default.user_buttons import main_dkb
-from keyboards.inline.consultation_ikbs import confirm_reenter_ibtn
 from loader import udb, adldb
-from states.user import UserAnketa
 
 
 async def check_user_test(call: types.CallbackQuery) -> bool:
@@ -26,17 +22,17 @@ async def handle_add_results(state: FSMContext, telegram_id: str, is_patient: bo
     leo = data['leongard']
 
     if is_patient:
-        patient_id = await adldb.get_patient(
+        patient_id = (await adldb.get_patient(
             telegram_id=telegram_id
-        )
+        ))['id']
     else:
         # Patient jadvaliga user ma'lumotlarini qo'shish
-        patient_id = (await adldb.add_patient(
+        patient_id = await adldb.add_patient(
             telegram_id=telegram_id, name=data['user_full_name'], phone=phone,
             marital_status=data['marital_status'], absence_children=data['absence_children'], work=data['work'],
             result_eeg=data['eeg_result']
-        ))['id']
-    print(patient_id)
+        )
+    
     await adldb.add_to_tt_eysenc(
         patient_id=patient_id, temperament=eysenc['temperament'], extraversion=eysenc['extroversion'],
         neuroticism=eysenc['neuroticism']

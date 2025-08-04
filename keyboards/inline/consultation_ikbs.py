@@ -7,7 +7,7 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
     start = datetime.strptime(start_str, "%H:%M")
     end = datetime.strptime(end_str, "%H:%M")
 
-    busy_set = set(busy_times)  # faqat aynan band bo‘lgan vaqtlar
+    busy_set = set(busy_times)
 
     keyboard = InlineKeyboardMarkup(row_width=3)
 
@@ -18,7 +18,7 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
             keyboard.insert(
                 InlineKeyboardButton(
                     text=time_str,
-                    callback_data=f"select_time:{time_str}"
+                    callback_data=f"select_time-{time_str}"
                 )
             )
         current += timedelta(minutes=30)
@@ -120,7 +120,6 @@ def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[st
 
     for key, value in dates_by_day.items():
         for date_str in value['dates']:
-            # print(date_str)
             all_dates.append((key, date_str, value['time'], datetime.strptime(date_str, "%d-%m-%Y")))
 
     # Sana bo‘yicha sortlash
@@ -142,3 +141,21 @@ def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[st
         )
     )
     return keyboard
+
+
+def consultation_duration__ikb():
+    btn = InlineKeyboardMarkup()
+    durations = ['10', '20', '30', '40']
+
+    for duration in durations:
+        btn.add(
+            InlineKeyboardButton(
+                text=duration, callback_data=f"duration_{duration}"
+            )
+        )
+        btn.add(
+            InlineKeyboardButton(
+                text="⬅️ Ортга", callback_data="consultation_back1"
+            )
+        )
+    return btn
