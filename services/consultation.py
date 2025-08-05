@@ -68,28 +68,28 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
         await UserAnketa.FULL_NAME.set()
         return None
 
-    full_name = patient[3]
-    gender = patient_dict[patient[4]]
-    age = patient[5]
-    marital_status = patient_dict[patient[7]]
-    absence_children = patient_dict[patient[8]]
-    work = patient[9]
-    result_eeg = patient[10]
-    phone = patient[6]
+    full_name = patient['name']
+    gender = patient_dict[patient['gender']]
+    age = patient['age']
+    marital_status = patient_dict[patient['marital_status']]
+    absence_children = patient_dict[patient['absence_children']]
+    work = patient['work']
+    result_eeg = patient['result_eeg']
+    phone = patient['phone']
 
     text = (f"{consultation_text}\n\n"
             f"Маълумотларингиз сақланган\n\n"
             f"1. Исм шариф: {full_name}\n"
-            f"2. Жинс: {patient_dict.get(gender, gender)}\n"
+            f"2. Жинс: {gender}\n"
             f"3. Ёш: {age}\n"
-            f"4. Оилавий ҳолат: {patient_dict.get(marital_status, marital_status)}\n"
-            f"5. Фарзандлар: {patient_dict.get(absence_children, absence_children)}\n"
+            f"4. Оилавий ҳолат: {marital_status}\n"
+            f"5. Фарзандлар: {absence_children}\n"
             f"6. Иш соҳаси: {work.capitalize()}\n"
             f"7. ЭЭГ натижаси: {result_eeg.capitalize()}\n"
             f"8. Телефон рақам: {phone}\n\n"
             f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмани босинг")
 
-    await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
+    await message_obj.answer(text=text, reply_markup=confirm_reenter_ibtn())
 
     return None
 
@@ -175,5 +175,5 @@ async def handle_consultation_date_sv(event: types.Message | types.CallbackQuery
     keyboard = create_sorted_date_inline_keyboard(dates_by_day=dates_by_day)
 
     await message_obj.answer(
-        text=f"Маълумотлар қабул қилинди! Консультация вақтини танланг\n\n{text}", reply_markup=keyboard
+        text=f"Маълумотлар қабул қилинди!\n\nКонсультация вақтини танланг\n\n{text}", reply_markup=keyboard
     )

@@ -106,16 +106,14 @@ async def handle_consultation_chek(message: types.Message, state: FSMContext):
     print(f"{data}\n\n{len(data)}")
 
     if len(data) == 7:
-        pass
+        await handle_add_results(
+            state=state, telegram_id=str(message.from_user.id), is_patient=True
+        )
 
     elif len(data) == 13:
         await handle_add_results(
             state=state, telegram_id=str(message.from_user.id)
         )
-
-    await message.answer(
-        text=f"<code>{message.photo[-1].file_id}</code>"
-    )
 
 
 @dp.message_handler(F.text == "ada", state="*")
@@ -123,8 +121,6 @@ async def handle_ada(message: types.Message, state: FSMContext):
     data = await state.get_data()
     file_id = "AgACAgIAAxkBAAJXQGiQKFBf73yomJN77kQCQgABz7NtUgACvPcxG-WngUiX8ISh8aug4QEAAwIAA3kAAzYE"
     print(f"{data}\n\n{len(data)}")
-
-    doctor_id = await adldb.get_doctor_id()
 
     if len(data) == 7:
         patient = await adldb.get_patient(telegram_id=str(message.from_user.id))
