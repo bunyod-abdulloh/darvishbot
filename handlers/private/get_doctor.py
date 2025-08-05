@@ -99,17 +99,23 @@ async def handle_select_time(call: types.CallbackQuery, state: FSMContext):
 
 @dp.message_handler(state=UserAnketa.PAYMENT, content_types=types.ContentType.PHOTO)
 async def handle_consultation_chek(message: types.Message, state: FSMContext):
-
     data = await state.get_data()
-    print(f"{data}\n\n{len(data)}")
+    
     photo_file_id = message.photo[-1].file_id
+    telegram_id = str(message.from_user.id)
+    username = message.from_user.username
 
     if len(data) == 7:
         await handle_add_results(
-            state=state, telegram_id=str(message.from_user.id), photo_file_id=photo_file_id, is_patient=True
+            state=state, telegram_id=telegram_id, username=username, photo_file_id=photo_file_id, is_patient=True
         )
 
     elif len(data) == 13:
         await handle_add_results(
-            state=state, telegram_id=str(message.from_user.id), photo_file_id=photo_file_id
+            state=state, telegram_id=telegram_id, username=username, photo_file_id=photo_file_id
+        )
+
+    else:
+        await message.answer(
+            text="Маълумотларингиз тўлиқ киритилмади! Қайта <b>✍️ Консультацияга ёзилиш</b> тугмасини босинг!"
         )

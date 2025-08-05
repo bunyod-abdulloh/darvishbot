@@ -122,7 +122,6 @@ async def notify_admin(photo_file_id, full_name, gender, age, marital_status,
                        absence_children, work, eeg_result, phone, telegram_id,
                        username, consultation_info, patient_id):
     caption = (
-        f"<b>Янги бемор маълумотлари қабул қилинди!</b>\n\n"
         f"<b>Исм шарифи:</b> {full_name}\n"
         f"<b>Жинси:</b> {gender}\n"
         f"<b>Ёши:</b> {age}\n"
@@ -135,16 +134,25 @@ async def notify_admin(photo_file_id, full_name, gender, age, marital_status,
         f"<b>Телеграм username:</b>  @{username}\n"
         f"<b>Консультация санаси:</b> {consultation_info['date']} | {consultation_info['day']} | {consultation_info['time']}\n"
         f"<b>Давомийлиги:</b> {consultation_info['duration']} дақиқа\n\n"
-        f"<b>Тестлар натижасини CRMдан кўришингиз мумкин!</b>"
     )
 
+    # Send message to admin
     await bot.send_photo(
         chat_id=ADMINS[0],
         photo=photo_file_id,
-        caption=caption,
+        caption=f"<b>Янги бемор маълумотлари қабул қилинди!</b>\n\n"
+                f"{caption}"
+                f"<b>Тестлар натижасини CRMдан кўришингиз мумкин!</b>",
         reply_markup=check_patient_datas_ikbs(patient_id=patient_id)
     )
 
+    # Send message to patient
+    await bot.send_photo(
+        chat_id=telegram_id,
+        photo=photo_file_id,
+        caption=f"{caption}"
+                f"Маълумотларингиз қабул қилинди! Тез орада админ Сизга алоқага чиқади!"
+    )
 
 async def add_appointment(patient_id, age, consultation_info):
     appointment_datetime = datetime.strptime(
