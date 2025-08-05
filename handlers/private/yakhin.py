@@ -7,7 +7,7 @@ from keyboards.inline.user_ibuttons import start_test, test_ibuttons
 from loader import dp, yxndb
 from services.error_service import notify_exception_to_admin
 from utils.all_functions import warning_text
-from utils.yaxin import calculate_and_send_results
+from utils.utils_yakhin import calculate_and_send_results
 
 
 @dp.message_handler(F.text == "Яхин Менделевич сўровномаси", state="*")

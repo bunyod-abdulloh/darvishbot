@@ -114,7 +114,7 @@ async def handle_end_of_test(call: types.CallbackQuery, state: FSMContext):
                         "extroversion": extroversion,
                         "neuroticism": neuroticism}
 
-        await state.update_data(ayzenk=eysenc_state)
+        await state.update_data(eysenc=eysenc_state)
 
         temperament_result = temperament_map.get(temperament)
 

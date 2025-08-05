@@ -6,7 +6,7 @@ from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.user_ibuttons import start_test, leotest_ikb
 from loader import dp, leodb
 from utils.all_functions import warning_text
-from utils.leo import handle_answer
+from utils.utils_leonhard import handle_answer
 
 
 @dp.message_handler(F.text == "Леонгард сўровномаси", state="*")

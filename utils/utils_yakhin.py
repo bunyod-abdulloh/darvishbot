@@ -65,7 +65,7 @@ async def calculate_and_send_results(call: types.CallbackQuery, state: FSMContex
         "neurotic_detected": nevrotik_detected
     }
 
-    await state.update_data(yaxin=yakhin_stt)
+    await state.update_data(yakhin=yakhin_stt)
 
     await stdb.set_test_result(
         telegram_id=str(call.from_user.id), test_type="Yaxin", result=f"{nevrotik_detected}"

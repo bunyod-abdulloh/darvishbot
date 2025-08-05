@@ -38,7 +38,7 @@ async def leo_result(call: types.CallbackQuery):
     MAX_SCORE = 24
 
     results = {}
-    leo_state = {}
+    leonhard_state = {}
 
     for scale in scales.values():
         scale_data = await leodb.get_sums_leotemp(telegram_id=call.from_user.id, scale_type=scale)
@@ -48,7 +48,7 @@ async def leo_result(call: types.CallbackQuery):
     result_text = f"Сўровнома якунланди!\n\nТест тури: Леонгард | Характерологик сўровнома\n\n"
 
     for key, value in scales.items():
-        leo_state[value] = results.get(value)
+        leonhard_state[value] = results.get(value)
         result_text += f"{key} тоифа: {results.get(value, 'No data')} балл\n"
 
     result_text += "\nСўровнома ва шкалаларга таъриф қуйидаги ҳаволада:\n\n" \
@@ -66,7 +66,7 @@ async def leo_result(call: types.CallbackQuery):
     # Foydalanuvchining umumiy natijasini statistika uchun bazaga yozamiz
     await stdb.set_test_result(telegram_id=str(call.from_user.id), test_type="Leongard", result=dominant_type)
 
-    return leo_state
+    return leonhard_state
 
 
 async def handle_answer(call: types.CallbackQuery, question_id: int, is_yes: bool, state: FSMContext):
@@ -84,8 +84,8 @@ async def handle_answer(call: types.CallbackQuery, question_id: int, is_yes: boo
                 )
 
         if question_id == 88:
-            leo_state = await leo_result(call=call)
-            await state.update_data(leongard=leo_state)
+            leonhard_state = await leo_result(call=call)
+            await state.update_data(leonhard=leonhard_state)
         else:
             await call.message.edit_text(
                 text=f"{all_questions[question_id]['question_number']} / {len(all_questions)}"

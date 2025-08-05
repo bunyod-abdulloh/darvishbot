@@ -28,12 +28,12 @@ week_days = {
 
 async def missing_test(state: FSMContext) -> str | None:
     data = await state.get_data()
-    tests = ['ayzenk', 'leongard', 'yaxin']
+    tests = ['eysenc', 'leonhard', 'yakhin']
 
     test_names = {
-        'ayzenk': 'Айзенк | Темперамент аниқлаш',
-        'leongard': 'Леонгард сўровномаси',
-        'yaxin': 'Яхин Менделевич сўровномаси'
+        'eysenc': 'Айзенк | Темперамент аниқлаш',
+        'leonhard': 'Леонгард сўровномаси',
+        'yakhin': 'Яхин Менделевич сўровномаси'
     }
 
     missing = [t for t in tests if t not in data]
@@ -101,7 +101,8 @@ def float_to_time_str(hour_float):
 
 
 def generate_workday_text(doctor: list) -> str:
-    lines = ["<b>Иш кун ва вақтлари</b>\n"]
+    lines = ["Консультация санасини танланг\n\n"
+             "<b>Иш кун ва вақтлари</b>\n"]
     for day in doctor:
         start_hour = float_to_time_str(hour_float=day['start_hour'])
         end_hour = float_to_time_str(hour_float=day['end_hour'])
@@ -174,6 +175,6 @@ async def handle_consultation_date_sv(event: types.Message | types.CallbackQuery
 
     keyboard = create_sorted_date_inline_keyboard(dates_by_day=dates_by_day)
 
-    await message_obj.answer(
-        text=f"Маълумотлар қабул қилинди!\n\nКонсультация вақтини танланг\n\n{text}", reply_markup=keyboard
-    )
+    # await message_obj.answer(
+    #     text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
+    # )

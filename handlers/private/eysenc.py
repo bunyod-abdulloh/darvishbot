@@ -7,7 +7,7 @@ from keyboards.inline.user_ibuttons import ayzenktemp_ikb, start_test
 from loader import dp, ayzdb
 from services.error_service import notify_exception_to_admin
 from utils.all_functions import warning_text
-from utils.ayzenk import ayztemplastquestion, handle_response
+from utils.utils_eysenc import ayztemplastquestion, handle_response
 
 
 @dp.message_handler(F.text == "Айзенк | Темперамент аниқлаш", state="*")
