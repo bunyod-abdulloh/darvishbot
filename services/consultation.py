@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, time
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.consultation_ikbs import confirm_reenter_ibtn, create_sorted_date_inline_keyboard
+from keyboards.inline.consultation_ikbs import confirm_reenter_ibtn, show_consultation_dates_keyboard
 from loader import adldb
 from states.user import UserAnketa
 
@@ -89,7 +89,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
             f"8. Телефон рақам: {phone}\n\n"
             f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмани босинг")
 
-    await message_obj.answer(text=text, reply_markup=confirm_reenter_ibtn())
+    await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
 
     return None
 
@@ -173,8 +173,20 @@ async def handle_consultation_date_sv(event: types.Message | types.CallbackQuery
 
     dates_by_day = get_upcoming_work_dates_with_hours(doctor)
 
-    keyboard = create_sorted_date_inline_keyboard(dates_by_day=dates_by_day)
+    keyboard = show_consultation_dates_keyboard(dates_by_day=dates_by_day)
 
     # await message_obj.answer(
     #     text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
     # )
+
+
+async def show_consultation_dates_menu(call: types.CallbackQuery):
+    doctor = await adldb.get_doctor_work_days()
+
+    text = generate_workday_text(doctor)
+
+    dates_by_day = get_upcoming_work_dates_with_hours(doctor)
+
+    keyboard = show_consultation_dates_keyboard(dates_by_day=dates_by_day)
+
+    await call.message.edit_text(text=text, reply_markup=keyboard)

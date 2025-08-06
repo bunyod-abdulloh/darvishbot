@@ -24,11 +24,10 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
         current += timedelta(minutes=30)
     keyboard.add(
         InlineKeyboardButton(
-            text="⬅️ Ортга", callback_data="consultation_back:1"
+            text="⬅️ Ортга", callback_data="consultation_back:3"
         )
     )
     return keyboard
-
 
 
 def sign_up_to_consultation():
@@ -133,7 +132,8 @@ def consultation_duration__ikb():
     )
     return btn
 
-def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[str]]]) -> InlineKeyboardMarkup:
+
+def show_consultation_dates_keyboard(dates_by_day: dict[str, dict[str, list[str]]]) -> InlineKeyboardMarkup:
     all_dates = []
 
     # Barcha sanalarni yig‘ish va datetime formatga aylantirib saqlash

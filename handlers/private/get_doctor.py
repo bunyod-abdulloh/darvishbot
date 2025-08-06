@@ -4,10 +4,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from keyboards.inline.consultation_ikbs import create_sorted_date_inline_keyboard, create_free_time_keyboard, \
+from keyboards.inline.consultation_ikbs import create_free_time_keyboard, \
     consultation_duration__ikb
 from loader import dp, adldb
-from services.consultation import generate_workday_text, get_upcoming_work_dates_with_hours, week_days
+from services.consultation import week_days, \
+    show_consultation_dates_menu
 from services.helper_functions import handle_add_results
 from states.user import UserAnketa
 
@@ -35,16 +36,8 @@ async def handle_consultation_duration(call: types.CallbackQuery, state: FSMCont
     await state.update_data(
         consultation_duration=duration
     )
+    await show_consultation_dates_menu(call=call)
 
-    doctor = await adldb.get_doctor_work_days()
-
-    text = generate_workday_text(doctor)
-
-    dates_by_day = get_upcoming_work_dates_with_hours(doctor)
-
-    keyboard = create_sorted_date_inline_keyboard(dates_by_day=dates_by_day)
-
-    await call.message.edit_text(text=text, reply_markup=keyboard)
 
 
 @dp.callback_query_handler(F.data.startswith("date_"), state="*")

@@ -5,7 +5,7 @@ from magic_filter import F
 from handlers.private.get_doctor import data_
 from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb, consultation_duration__ikb
 from loader import dp
-from services.consultation import check_patient_datas
+from services.consultation import check_patient_datas, show_consultation_dates_menu
 from states.user import UserAnketa
 
 
@@ -17,15 +17,17 @@ async def handle_sign_up_consultation(message: types.Message, state: FSMContext)
 @dp.callback_query_handler(F.data.startswith("consultation_back:"), state="*")
 async def handle_back_buttons(call: types.CallbackQuery, state: FSMContext):
     level = int(call.data.split(":")[1])
-
-    if level == 1:
-        await check_patient_datas(event=call, state=state)
-
-    elif level == 2:
-        await call.message.edit_text(
+    print(level)
+    levels = {
+        1: lambda: check_patient_datas(event=call, state=state),
+        2: lambda: call.message.edit_text(
             text="Консультация давомийлигини танланг",
             reply_markup=consultation_duration__ikb()
-        )
+        ),
+        3: lambda: show_consultation_dates_menu(call=call)
+    }
+    await call.answer()
+    await levels[level]()
 
 
 @dp.message_handler(F.text == "sa", state="*")
