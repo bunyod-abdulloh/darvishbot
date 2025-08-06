@@ -79,6 +79,9 @@ def confirm_reenter_ibtn():
     )
     btn.row(
         InlineKeyboardButton(
+            text="❌ Бекор қилиш", callback_data="cancel_consultation"
+        ),
+        InlineKeyboardButton(
             text="✅ Тасдиқлаш", callback_data="confirm"
         )
     )
@@ -113,6 +116,23 @@ def absence_children_ikb():
     return btn
 
 
+def consultation_duration__ikb():
+    btn = InlineKeyboardMarkup(row_width=2)
+    durations = ['10', '20', '30']
+
+    for duration in durations:
+        btn.insert(
+            InlineKeyboardButton(
+                text=f"⏱️ {duration} дақиқа", callback_data=f"duration_{duration}"
+            )
+        )
+    btn.add(
+        InlineKeyboardButton(
+            text="⬅️ Ортга", callback_data="consultation_back:1"
+        )
+    )
+    return btn
+
 def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[str]]]) -> InlineKeyboardMarkup:
     all_dates = []
 
@@ -137,25 +157,7 @@ def create_sorted_date_inline_keyboard(dates_by_day: dict[str, dict[str, list[st
         )
     keyboard.add(
         InlineKeyboardButton(
-            text="⬅️ Ортга", callback_data="consultation_back1"
+            text="⬅️ Ортга", callback_data="consultation_back:2"
         )
     )
     return keyboard
-
-
-def consultation_duration__ikb():
-    btn = InlineKeyboardMarkup()
-    durations = ['10', '20', '30']
-
-    for duration in durations:
-        btn.add(
-            InlineKeyboardButton(
-                text=f"{duration} дақиқа", callback_data=f"duration_{duration}"
-            )
-        )
-    btn.add(
-        InlineKeyboardButton(
-            text="⬅️ Ортга", callback_data="consultation_back1"
-        )
-    )
-    return btn

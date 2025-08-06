@@ -14,6 +14,19 @@ async def handle_sign_up_consultation(message: types.Message, state: FSMContext)
     await check_patient_datas(event=message, state=state)
 
 
+@dp.callback_query_handler(F.data.startswith("consultation_back:"), state="*")
+async def handle_back_buttons(call: types.CallbackQuery, state: FSMContext):
+    level = int(call.data.split(":")[1])
+
+    if level == 1:
+        await check_patient_datas(event=call, state=state)
+
+    elif level == 2:
+        await call.message.edit_text(
+            text="Консультация давомийлигини танланг",
+            reply_markup=consultation_duration__ikb()
+        )
+
 
 @dp.message_handler(F.text == "sa", state="*")
 async def sempler(message: types.Message, state: FSMContext):
@@ -34,6 +47,13 @@ async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext)
     await call.answer(cache_time=0)
     await check_patient_datas(event=call, state=state)
 
+
+@dp.callback_query_handler(F.data == "cancel_consultation", state="*")
+async def handle_cancel_consultation(call: types.CallbackQuery, state: FSMContext):
+    await state.finish()
+    await call.message.edit_text(
+        text="Барча тестларингиз натижалари бекор қилинди!"
+    )
 
 
 @dp.callback_query_handler(F.data.in_(("re-enter", "confirm")), state="*")
