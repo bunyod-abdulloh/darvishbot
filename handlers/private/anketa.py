@@ -8,7 +8,7 @@ from services.error_service import notify_exception_to_admin
 from states.user import UserAnketa
 
 
-@dp.callback_query_handler(F.data == "consultation", state="*")
+@dp.callback_query_handler(F.data == "heaved_on_consultation", state="*")
 async def handle_sign_up_consultation(call: types.CallbackQuery):
     await call.message.edit_text(
         text="Тўлиқ исм-шарифингизни киритинг:\n\n<b>(Намуна: Тешабоева Гавҳар Дарвишовна)</b>"

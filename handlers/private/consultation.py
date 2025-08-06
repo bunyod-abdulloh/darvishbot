@@ -23,13 +23,13 @@ async def sempler(message: types.Message, state: FSMContext):
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(
         types.InlineKeyboardButton(
-            text="Konsultasiya", callback_data="consultation"
+            text="Konsultasiya", callback_data="heaved_on_consultation"
         )
     )
     await message.answer(text=message.text, reply_markup=keyboard)
 
 
-@dp.callback_query_handler(F.data == "consultation", state="*")
+@dp.callback_query_handler(F.data == "heaved_on_consultation", state="*")
 async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext):
     await call.answer(cache_time=0)
     await check_patient_datas(event=call, state=state)

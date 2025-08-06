@@ -24,7 +24,7 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
         current += timedelta(minutes=30)
     keyboard.add(
         InlineKeyboardButton(
-            text="⬅️ Ортга", callback_data="consultation_back1"
+            text="⬅️ Ортга", callback_data="consultation_back:1"
         )
     )
     return keyboard
@@ -34,15 +34,15 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
 def sign_up_to_consultation():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.add(InlineKeyboardButton(
-        text="✍️ Консультацияга ёзилиш", callback_data=f"consultation"))
+        text="✍️ Консультацияга ёзилиш", callback_data=f"heaved_on_consultation"))
     return btn
 
 
 def select_gender_btn():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.row(
-        InlineKeyboardButton(text="Эркак", callback_data="test_male"),
-        InlineKeyboardButton(text="Аёл", callback_data="test_female")
+        InlineKeyboardButton(text="👱‍♂️ Эркак", callback_data="test_male"),
+        InlineKeyboardButton(text="👩‍🦰 Аёл", callback_data="test_female")
     )
     return btn
 
@@ -79,7 +79,7 @@ def confirm_reenter_ibtn():
     )
     btn.row(
         InlineKeyboardButton(
-            text="Тасдиқлаш", callback_data="confirm"
+            text="✅ Тасдиқлаш", callback_data="confirm"
         )
     )
     return btn
@@ -89,12 +89,12 @@ def marital_status_ikb():
     btn = InlineKeyboardMarkup(row_width=2)
     btn.add(
         InlineKeyboardButton(
-            text="Турмуш қурган", callback_data="married"
+            text="💍 Турмуш қурган", callback_data="married"
         )
     )
     btn.add(
         InlineKeyboardButton(
-            text="Турмуш қурмаган", callback_data="unmarried"
+            text="💐 Турмуш қурмаган", callback_data="unmarried"
         )
     )
     return btn
@@ -104,10 +104,10 @@ def absence_children_ikb():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.row(
         InlineKeyboardButton(
-            text="Бор", callback_data="yes_absence_children"
+            text="👶 Бор", callback_data="has_child_yes"
         ),
         InlineKeyboardButton(
-            text="Йўқ", callback_data="no_absence_children"
+            text="🚫👶 Йўқ", callback_data="has_child_no"
         )
     )
     return btn
