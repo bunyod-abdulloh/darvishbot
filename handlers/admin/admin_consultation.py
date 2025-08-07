@@ -12,7 +12,7 @@ async def handle_check_consultation(call: types.CallbackQuery, state: FSMContext
     patient_id = call.data.split(":")[1]
     await state.update_data(admin_patient_id=int(patient_id))
 
-    await call.message.edit_text(
+    await call.message.answer(
         text="Рад этилиш сабабини киритинг"
     )
     await AdminStates.СANCEL_CONSULTATION.set()
@@ -26,7 +26,7 @@ async def handle_check_consultation_st(message: types.Message, state: FSMContext
     try:
         await bot.send_message(
             chat_id=patient['tg_id'],
-            text=f"Консультация учун сўровингиз рад этилди! Сабаб:\n\n<b>{message.text}</b>"
+            text=f"Консультация учун сўровингиз рад этилди!\n\nСабаб:\n\n<b>{message.text}</b>"
         )
     except Exception as err:
         await message.answer(
@@ -44,6 +44,12 @@ async def handle_check_consultation_st(message: types.Message, state: FSMContext
 async def handle_delete_user_datas(call: types.CallbackQuery, state: FSMContext):
     if call.data == "yes":
         patient_id = (await state.get_data()).get("admin_patient_id")
-
+        await adldb.delete_patient_datas(patient_id=patient_id)
+        await call.message.edit_text(
+            text="Маълумотлар ўчирилди!"
+        )
     elif call.data == "no":
-        pass
+        await call.message.edit_text(
+            text="Тушунарли!"
+        )
+    await state.finish()

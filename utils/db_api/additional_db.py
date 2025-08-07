@@ -46,7 +46,7 @@ class AdditionalDB:
         return patient_id
 
     async def delete_patient_datas(self, patient_id):
-        await self.db.execute("""DELETE FROM clinic_patient WHERE id = $1 CASCADE""", patient_id, execute=True)
+        await self.db.execute("""DELETE FROM clinic_patient WHERE id = $1""", patient_id, execute=True)
 
 
     async def add_to_tt_eysenc(self, patient_id, temperament, extraversion, neuroticism):

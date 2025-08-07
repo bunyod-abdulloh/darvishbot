@@ -13,8 +13,8 @@ def check_patient_datas_ikbs(patient_id):
 
 def are_you_sure_markup():
     inline_keyboard = [[
-        InlineKeyboardButton(text="✅ Yes", callback_data='yes'),
-        InlineKeyboardButton(text="❌ No", callback_data='no')
+        InlineKeyboardButton(text="❌ No", callback_data='no'),
+        InlineKeyboardButton(text="✅ Yes", callback_data='yes')
     ]]
     keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
     return keyboard

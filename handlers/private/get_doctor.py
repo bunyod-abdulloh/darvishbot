@@ -74,12 +74,6 @@ async def handle_choose_date(call: types.CallbackQuery, state: FSMContext):
     )
 
 
-@dp.callback_query_handler(F.data == "consultation_back1", state="*")
-async def handle_back_consultation(call: types.CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    print(data)
-
-
 @dp.callback_query_handler(F.data.startswith("select_time-"), state="*")
 async def handle_select_time(call: types.CallbackQuery, state: FSMContext):
     time = call.data.split("-")[1]

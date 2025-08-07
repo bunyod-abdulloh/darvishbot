@@ -106,10 +106,10 @@ def absence_children_ikb():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.row(
         InlineKeyboardButton(
-            text="👶 Бор", callback_data="has_child_yes"
+            text="👶 Бор", callback_data="absence_children_yes"
         ),
         InlineKeyboardButton(
-            text="🚫👶 Йўқ", callback_data="has_child_no"
+            text="🚫👶 Йўқ", callback_data="absence_children_no"
         )
     )
     return btn

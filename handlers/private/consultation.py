@@ -17,7 +17,7 @@ async def handle_sign_up_consultation(message: types.Message, state: FSMContext)
 @dp.callback_query_handler(F.data.startswith("consultation_back:"), state="*")
 async def handle_back_buttons(call: types.CallbackQuery, state: FSMContext):
     level = int(call.data.split(":")[1])
-    print(level)
+
     levels = {
         1: lambda: check_patient_datas(event=call, state=state),
         2: lambda: call.message.edit_text(
@@ -92,7 +92,7 @@ async def handle_marital_status(call: types.CallbackQuery, state: FSMContext):
 
 @dp.callback_query_handler(state=UserAnketa.ABSENCE_CHILDREN)
 async def handle_absence_children(call: types.CallbackQuery, state: FSMContext):
-    await state.update_data(absence_children=call.data.split("_")[0])
+    await state.update_data(absence_children=call.data.split("_")[-1])
     await call.message.edit_text(
         text="Иш соҳангизни киритинг"
     )
