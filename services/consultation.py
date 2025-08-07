@@ -26,6 +26,14 @@ week_days = {
     "yakshanba": "Якшанба"
 }
 
+demo_results = {'yakhin': {'anxiety': 7.81, 'depression': 7.79, 'asthenia': 9.9, 'hysteroid_response': 7.24,
+                           'obsessive_phobic': 6.03, 'vegetative': 17.23, 'neurotic_detected': False},
+                'eysenc': {'temperament': 'Xolerik', 'extroversion': 15.0, 'neuroticism': 24.0},
+                'leongard': {'isteroid': 22, 'pedantic': 22, 'rigid': 18, 'epileptoid': 24, 'gipertim': 24,
+                             'distimic': 15,
+                             'danger': 21, 'ciclomistic': 24, 'affectexaltir': 24, 'emotiv': 21}}
+
+
 async def missing_test(state: FSMContext) -> str | None:
     data = await state.get_data()
     tests = ['eysenc', 'leonhard', 'yakhin']
@@ -45,6 +53,10 @@ async def missing_test(state: FSMContext) -> str | None:
 
 
 async def check_patient_datas(event: types.Message | types.CallbackQuery, state: FSMContext) -> str | None:
+    await state.update_data(yakhin=demo_results['yakhin'],
+                            eysenc=demo_results['eysenc'],
+                            leonhard=demo_results['leongard'])
+
     # 1. Message obyektini ajratib olish
     if isinstance(event, types.CallbackQuery):
         user_id = event.from_user.id
@@ -68,6 +80,11 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
         await UserAnketa.FULL_NAME.set()
         return None
 
+    await state.finish()
+    await state.update_data(yakhin=demo_results['yakhin'],
+                            eysenc=demo_results['eysenc'],
+                            leonhard=demo_results['leongard'])
+
     full_name = patient['name']
     gender = patient_dict[patient['gender']]
     age = patient['age']
@@ -89,7 +106,7 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
             f"8. Телефон рақам: {phone}\n\n"
             f"Барчаси тўғри бўлса <b>Тасдиқлаш</b> тугмасини, тўғри бўлмаса керакли тугмани босинг")
 
-    await message_obj.edit_text(text=text, reply_markup=confirm_reenter_ibtn())
+    await message_obj.answer(text=text, reply_markup=confirm_reenter_ibtn())
 
     return None
 
@@ -159,25 +176,6 @@ consultation_text = ("<b>Консультацияга ёзилиш учун қу
                      "2. Шахсий маълумотларни киритиш\n"
                      "3. Консультация учун 50 фоиз тўловни амалга ошириб чек расмини юбориш"
                      )
-
-
-async def handle_consultation_date_sv(event: types.Message | types.CallbackQuery):
-    if isinstance(event, types.CallbackQuery):
-        message_obj = event.message
-    else:
-        message_obj = event
-
-    doctor = await adldb.get_doctor_work_days()
-
-    text = generate_workday_text(doctor)
-
-    dates_by_day = get_upcoming_work_dates_with_hours(doctor)
-
-    keyboard = show_consultation_dates_keyboard(dates_by_day=dates_by_day)
-
-    # await message_obj.answer(
-    #     text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
-    # )
 
 
 async def show_consultation_dates_menu(call: types.CallbackQuery):

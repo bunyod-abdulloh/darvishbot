@@ -2,7 +2,6 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from handlers.private.get_doctor import data_
 from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb, consultation_duration__ikb
 from loader import dp
 from services.consultation import check_patient_datas, show_consultation_dates_menu
@@ -28,20 +27,6 @@ async def handle_back_buttons(call: types.CallbackQuery, state: FSMContext):
     }
     await call.answer()
     await levels[level]()
-
-
-@dp.message_handler(F.text == "sa", state="*")
-async def sempler(message: types.Message, state: FSMContext):
-    await state.update_data(yakhin=data_['yakhin'],
-                            eysenc=data_['eysenc'],
-                            leonhard=data_['leongard'])
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(
-        types.InlineKeyboardButton(
-            text="Konsultasiya", callback_data="heaved_on_consultation"
-        )
-    )
-    await message.answer(text=message.text, reply_markup=keyboard)
 
 
 @dp.callback_query_handler(F.data == "heaved_on_consultation", state="*")

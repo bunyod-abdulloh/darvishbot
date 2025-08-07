@@ -115,7 +115,7 @@ class AdditionalDB:
     async def get_doctor_time(self, formatted_date: str):
         sql = """
             SELECT
-                TO_CHAR(a.appointment_date AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Tashkent', 'HH24:MI') AS appointment_time                    
+                TO_CHAR(a.appointment_date, 'HH24:MI') AS appointment_time                    
             FROM clinic_appointment a
             JOIN clinic_doctor d ON a.doctor_id = d.id
             WHERE a.appointment_date::date = $1

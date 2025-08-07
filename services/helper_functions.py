@@ -129,11 +129,9 @@ async def notify_admin(photo_file_id, full_name, gender, age, marital_status,
         f"<b>Фарзандлари:</b> {absence_children}\n"
         f"<b>Иш соҳаси:</b> {work}\n"
         f"<b>ЭЭГ натижаси:</b> {eeg_result}\n"
-        f"<b>Телефон рақами:</b> {phone}\n"
-        f"<b>Телеграм ID:</b> <code>{telegram_id}</code>\n"
-        f"<b>Телеграм username:</b>  @{username}\n"
+        f"<b>Телефон рақами:</b> {phone}\n"        
         f"<b>Консультация санаси:</b> {consultation_info['date']} | {consultation_info['day']} | {consultation_info['time']}\n"
-        f"<b>Давомийлиги:</b> {consultation_info['duration']} дақиқа\n\n"
+        f"<b>Давомийлиги:</b> {consultation_info['duration']} дақиқа\n"
     )
 
     # Send message to admin
@@ -142,6 +140,8 @@ async def notify_admin(photo_file_id, full_name, gender, age, marital_status,
         photo=photo_file_id,
         caption=f"<b>Янги бемор маълумотлари қабул қилинди!</b>\n\n"
                 f"{caption}"
+                f"<b>Телеграм ID:</b> <code>{telegram_id}</code>\n"
+                f"<b>Телеграм username:</b>  @{username}\n\n"
                 f"<b>Тестлар натижасини CRMдан кўришингиз мумкин!</b>",
         reply_markup=check_patient_datas_ikbs(patient_id=patient_id)
     )
@@ -150,7 +150,7 @@ async def notify_admin(photo_file_id, full_name, gender, age, marital_status,
     await bot.send_photo(
         chat_id=telegram_id,
         photo=photo_file_id,
-        caption=f"{caption}"
+        caption=f"{caption}\n"
                 f"Маълумотларингиз қабул қилинди! Тез орада админ Сизга алоқага чиқади!"
     )
 

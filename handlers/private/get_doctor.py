@@ -4,30 +4,12 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from magic_filter import F
 
-from keyboards.inline.consultation_ikbs import create_free_time_keyboard, \
-    consultation_duration__ikb
+from keyboards.inline.consultation_ikbs import create_free_time_keyboard
 from loader import dp, adldb
 from services.consultation import week_days, \
     show_consultation_dates_menu
 from services.helper_functions import handle_add_results
 from states.user import UserAnketa
-
-data_ = {'yakhin': {'anxiety': 7.81, 'depression': 7.79, 'asthenia': 9.9, 'hysteroid_response': 7.24,
-                   'obsessive_phobic': 6.03, 'vegetative': 17.23, 'neurotic_detected': False},
-         'eysenc': {'temperament': 'Xolerik', 'extroversion': 15.0, 'neuroticism': 24.0},
-         'leongard': {'isteroid': 22, 'pedantic': 22, 'rigid': 18, 'epileptoid': 24, 'gipertim': 24, 'distimic': 15,
-                      'danger': 21, 'ciclomistic': 24, 'affectexaltir': 24, 'emotiv': 21}}
-
-
-@dp.message_handler(F.text == "sasa", state="*")
-async def handle_get_doctor(message: types.Message, state: FSMContext):
-    await state.update_data(yaxin=data_['yakhin'],
-                            ayzenk=data_['eysenc'],
-                            leongard=data_['leongard'])
-
-    await message.answer(
-        text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
-    )
 
 
 @dp.callback_query_handler(F.data.startswith("duration_"), state="*")
