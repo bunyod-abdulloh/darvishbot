@@ -5,10 +5,16 @@ def check_patient_datas_ikbs(patient_id):
     btn = InlineKeyboardMarkup()
     btn.add(
         InlineKeyboardButton(
-            text="Рад қилиш", callback_data=f"admin_cancel:{patient_id}"
-        ),
-        InlineKeyboardButton(
-            text="Тасдиқлаш", callback_data=f"admin_check:{patient_id}"
+            text="❌ Рад қилиш", callback_data=f"admin_cancel:{patient_id}"
         )
     )
     return btn
+
+
+def are_you_sure_markup():
+    inline_keyboard = [[
+        InlineKeyboardButton(text="✅ Yes", callback_data='yes'),
+        InlineKeyboardButton(text="❌ No", callback_data='no')
+    ]]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+    return keyboard

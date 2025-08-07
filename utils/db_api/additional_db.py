@@ -17,6 +17,10 @@ class AdditionalDB:
         sql = """SELECT * FROM clinic_patient WHERE tg_id = $1"""
         return await self.db.execute(sql, telegram_id, fetchrow=True)
 
+    async def get_patient_by_id(self, patient_id):
+        sql = """SELECT * FROM clinic_patient WHERE id = $1"""
+        return await self.db.execute(sql, patient_id, fetchrow=True)
+
     async def add_patient(self, telegram_id, name, phone, marital_status, absence_children, work, result_eeg):
         sql = """
             INSERT INTO clinic_patient (
@@ -40,6 +44,10 @@ class AdditionalDB:
             print("❌ INSERT bajarilmadi, chunki bot_users da bu telegram_id yo‘q:", telegram_id)
 
         return patient_id
+
+    async def delete_patient_datas(self, patient_id):
+        await self.db.execute("""DELETE FROM clinic_patient WHERE id = $1 CASCADE""", patient_id, execute=True)
+
 
     async def add_to_tt_eysenc(self, patient_id, temperament, extraversion, neuroticism):
         sql = """INSERT INTO clinic_tt_eysenc (patient_id, temperament, extraversion, neuroticism, create_date) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)"""

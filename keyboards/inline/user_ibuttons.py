@@ -1,11 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
 
-inline_keyboard = [[
-    InlineKeyboardButton(text="✅ Yes", callback_data='yes'),
-    InlineKeyboardButton(text="❌ No", callback_data='no')
-]]
-are_you_sure_markup = InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
 
 
 # def key_returner_selected(items, table_name, current_page, all_pages, selected):
