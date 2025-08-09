@@ -172,6 +172,18 @@ async def add_appointment(patient_id, age, consultation_info):
         appointment_date=appointment_datetime
     )
 
+symptoms = {
+    1: "Бош оғриғи",
+    2: "Бош айланиши",
+    3: "Кўнгил айниши",
+    4: "Қорин оғриши",
+    5: "Томоқда бўғилиш хисси",
+    6: "Юрак уриб кетиши",
+    7: "Уйқу бузилиши",
+    8: "Кайфиятсизлик",
+    9: "Йиғлаш",
+    10: "Бефарқлик"
+}
 
 # import csv
 #
