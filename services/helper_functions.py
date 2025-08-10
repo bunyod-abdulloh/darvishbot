@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
@@ -36,7 +36,8 @@ async def handle_add_results(state: FSMContext, telegram_id: str, photo_file_id=
     test_results = {
         "eysenc": data['eysenc'],
         "yakhin": data['yakhin'],
-        "leongard": data['leonhard']
+        "leonhard": data['leonhard'],
+        "questionnaire": data['questionnaire']
     }
 
     bot_user = await udb.select_user(telegram_id=telegram_id)
@@ -95,26 +96,34 @@ async def get_or_create_patient(data, telegram_id: str, is_patient: bool):
 async def save_test_results(patient_id: int, results: dict):
     e = results['eysenc']
     y = results['yakhin']
-    l = results['leongard']
+    l = results['leonhard']
+    q = results['questionnaire']
+
+    current_date = date.today()
 
     await adldb.add_to_tt_eysenc(
         patient_id=patient_id, temperament=e['temperament'],
-        extraversion=e['extroversion'], neuroticism=e['neuroticism']
+        extraversion=e['extroversion'], neuroticism=e['neuroticism'], current_date=current_date
     )
 
     await adldb.add_to_tt_yakhin(
-        patient_id=patient_id, neurotic_detected=str(y['neurotic_detected']),
-        anxiety=y['anxiety'], depression=y['depression'],
-        asthenia=y['asthenia'], hysteroid_response=y['hysteroid_response'],
-        obsessive_phobic=y['obsessive_phobic'], vegetative=y['vegetative']
+        patient_id=patient_id, neurotic_detected=str(y['neurotic_detected']), anxiety=y['anxiety'],
+        depression=y['depression'], asthenia=y['asthenia'], hysteroid_response=y['hysteroid_response'],
+        obsessive_phobic=y['obsessive_phobic'], vegetative=y['vegetative'], current_date=current_date
     )
 
     await adldb.add_tt_leonhard(
         patient_id=patient_id,
-        hysteroid=l['isteroid'], pedantic=l['pedantic'], rigid=l['rigid'],
-        epileptoid=l['epileptoid'], hyperthymic=l['gipertim'],
-        dysthymic=l['distimic'], anxious=l['danger'],
-        cyclothymic=l['ciclomistic'], affective=l['affectexaltir'], emotive=l['emotiv']
+        hysteroid=l['isteroid'], pedantic=l['pedantic'], rigid=l['rigid'], epileptoid=l['epileptoid'],
+        hyperthymic=l['gipertim'], dysthymic=l['distimic'], anxious=l['danger'],
+        cyclothymic=l['ciclomistic'], affective=l['affectexaltir'], emotive=l['emotiv'], current_date=current_date
+    )
+
+    await adldb.add_or_update_questionnaire(
+        patient_id=patient_id, headache=q['headache'], dizziness=q['dizziness'], nausea=q['nausea'],
+        abdominal_pain=q['abdominal_pain'], feeling_choking=q['feeling_choking'],
+        heart_palpitations=q['heart_palpitations'], sleep_disturbance=q['sleep_disturbance'], low_mood=q['low_mood'],
+        crying=q['crying'], indifference=q['indifference'], current_date=current_date
     )
 
 
@@ -172,18 +181,35 @@ async def add_appointment(patient_id, age, consultation_info):
         appointment_date=appointment_datetime
     )
 
-symptoms = {
-    1: "Бош оғриғи",
-    2: "Бош айланиши",
-    3: "Кўнгил айниши",
-    4: "Қорин оғриши",
-    5: "Томоқда бўғилиш хисси",
-    6: "Юрак уриб кетиши",
-    7: "Уйқу бузилиши",
-    8: "Кайфиятсизлик",
-    9: "Йиғлаш",
-    10: "Бефарқлик"
+
+# 1. O'zbekcha simptom nomlari
+uzbek_symptoms = {
+    1: "бош оғриғи",
+    2: "бош айланиши",
+    3: "кўнгил айниши",
+    4: "қорин оғриши",
+    5: "томоқда бўғилиш хисси",
+    6: "юрак уриб кетиши",
+    7: "уйқу бузилиши",
+    8: "кайфиятсизлик",
+    9: "йиғлаш",
+    10: "бефарқлик"
 }
+
+# 2. Inglizcha kalitlari
+english_symptoms = {
+    1: "headache",
+    2: "dizziness",
+    3: "nausea",
+    4: "abdominal_pain",
+    5: "feeling_choking",
+    6: "heart_palpitations",
+    7: "sleep_disturbance",
+    8: "low_mood",
+    9: "crying",
+    10: "indifference"
+}
+
 
 # import csv
 #

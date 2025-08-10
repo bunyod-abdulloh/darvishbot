@@ -4,12 +4,15 @@ from magic_filter import F
 
 from keyboards.inline.consultation_ikbs import marital_status_ikb, absence_children_ikb, consultation_duration__ikb
 from loader import dp
-from services.consultation import check_patient_datas, show_consultation_dates_menu
+from services.consultation import check_patient_datas, show_consultation_dates_menu, duration_text
 from states.user import UserAnketa
+
+
 
 
 @dp.message_handler(F.text == "✍️ Консультацияга ёзилиш", state="*")
 async def handle_sign_up_consultation(message: types.Message, state: FSMContext):
+    await state.finish()
     await check_patient_datas(event=message, state=state)
 
 
@@ -20,19 +23,12 @@ async def handle_back_buttons(call: types.CallbackQuery, state: FSMContext):
     levels = {
         1: lambda: check_patient_datas(event=call, state=state),
         2: lambda: call.message.edit_text(
-            text="Консультация давомийлигини танланг",
-            reply_markup=consultation_duration__ikb()
+            text=duration_text, reply_markup=consultation_duration__ikb()
         ),
         3: lambda: show_consultation_dates_menu(call=call)
     }
     await call.answer()
     await levels[level]()
-
-
-@dp.callback_query_handler(F.data == "heaved_on_consultation", state="*")
-async def handle_consultation_test(call: types.CallbackQuery, state: FSMContext):
-    await call.answer(cache_time=0)
-    await check_patient_datas(event=call, state=state)
 
 
 @dp.callback_query_handler(F.data == "cancel_consultation", state="*")
@@ -47,7 +43,7 @@ async def handle_cancel_consultation(call: types.CallbackQuery, state: FSMContex
 async def handle_confirm_reenter(call: types.CallbackQuery):
     if call.data == "confirm":
         await call.message.edit_text(
-            text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
+            text=duration_text, reply_markup=consultation_duration__ikb()
         )
         # await handle_consultation_date_sv(event=call)
 
@@ -103,7 +99,7 @@ async def handle_phone_number(message: types.Message, state: FSMContext):
     if message.text.startswith("+") and message.text[1:].isdigit():
         await state.update_data(phone=message.text)
         await message.answer(
-            text="Консультация давомийлигини танланг", reply_markup=consultation_duration__ikb()
+            text=duration_text, reply_markup=consultation_duration__ikb()
         )
     else:
         await message.answer(text="Телефон рақамингизни юборинг\n\n<b>Намуна: +998971234567</b>")

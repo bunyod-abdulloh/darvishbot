@@ -4,7 +4,6 @@ import asyncio
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.consultation_ikbs import sign_up_to_consultation
 from loader import yxndb, stdb
 
 
@@ -51,7 +50,7 @@ async def calculate_and_send_results(call: types.CallbackQuery, state: FSMContex
     )
 
     # Xabarni yangilash
-    await call.message.edit_text(text=result_message, reply_markup=sign_up_to_consultation())
+    await call.message.edit_text(text=result_message)
 
     await yxndb.delete_user_yaxintemporary(telegram_id=call.from_user.id)
 

@@ -3,7 +3,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.consultation_ikbs import sign_up_to_consultation
 # from data.config import ADMINS, ADMIN_GROUP
 from keyboards.inline.user_ibuttons import ayzenktemp_ikb
 from loader import stdb, ayzdb
@@ -97,8 +96,7 @@ async def handle_end_of_test(call: types.CallbackQuery, state: FSMContext):
 
         await call.message.edit_text(
             text=f"Сўровнома якунланди!\n\nТест тури: Айзенк | Шахсият сўровномаси\n"
-                 f"\n\n{text}\n\n<a href='https://telegra.ph/Ajzenk-SHahsiyat-s%D1%9Erovnomasiga-izo%D2%B3-07-20'>Кўрсатмалар</a>",
-            reply_markup=sign_up_to_consultation()
+                 f"\n\n{text}\n\n<a href='https://telegra.ph/Ajzenk-SHahsiyat-s%D1%9Erovnomasiga-izo%D2%B3-07-20'>Кўрсатмалар</a>"
         )
 
         await ayzdb.delete_ayztemptemp(telegram_id=call.from_user.id)

@@ -30,13 +30,6 @@ def create_free_time_keyboard(start_str: str, end_str: str, busy_times: list[str
     return keyboard
 
 
-def sign_up_to_consultation():
-    btn = InlineKeyboardMarkup(row_width=1)
-    btn.add(InlineKeyboardButton(
-        text="✍️ Консультацияга ёзилиш", callback_data=f"heaved_on_consultation"))
-    return btn
-
-
 def select_gender_btn():
     btn = InlineKeyboardMarkup(row_width=1)
     btn.row(

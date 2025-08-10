@@ -29,33 +29,37 @@ week_days = {
 demo_results = {'yakhin': {'anxiety': 7.81, 'depression': 7.79, 'asthenia': 9.9, 'hysteroid_response': 7.24,
                            'obsessive_phobic': 6.03, 'vegetative': 17.23, 'neurotic_detected': False},
                 'eysenc': {'temperament': 'Xolerik', 'extroversion': 15.0, 'neuroticism': 24.0},
-                'leongard': {'isteroid': 22, 'pedantic': 22, 'rigid': 18, 'epileptoid': 24, 'gipertim': 24,
+                'leonhard': {'isteroid': 22, 'pedantic': 22, 'rigid': 18, 'epileptoid': 24, 'gipertim': 24,
                              'distimic': 15,
-                             'danger': 21, 'ciclomistic': 24, 'affectexaltir': 24, 'emotiv': 21}}
+                             'danger': 21, 'ciclomistic': 24, 'affectexaltir': 24, 'emotiv': 21},
+                'questionnaire': {'headache': 'yes', 'dizziness': 'yes', 'nausea': 'yes', 'abdominal_pain': 'yes',
+                                  'feeling_choking': 'yes', 'heart_palpitations': 'yes', 'sleep_disturbance': 'yes',
+                                  'low_mood': 'yes', 'crying': 'yes', 'indifference': 'yes'}}
+
+duration_text = "Консультация давомийлигини танланг"
 
 
 async def missing_test(state: FSMContext) -> str | None:
     data = await state.get_data()
-    tests = ['eysenc', 'leonhard', 'yakhin']
+    tests = ['eysenc', 'leonhard', 'yakhin', 'questionnaire']
 
     test_names = {
         'eysenc': 'Айзенк | Темперамент аниқлаш',
         'leonhard': 'Леонгард сўровномаси',
-        'yakhin': 'Яхин Менделевич сўровномаси'
+        'yakhin': 'Яхин Менделевич сўровномаси',
+        'questionnaire': 'Оддий сўровнома'
     }
 
     missing = [t for t in tests if t not in data]
     if missing:
         missing_text = "\n".join(f"{i + 1}. {test_names.get(t, t)}" for i, t in enumerate(missing))
-        return (f"{consultation_text}\n\n"                
-                f"Қуйидаги тестлар ишланмади:\n\n{missing_text}")
+        return (f"{consultation_text}\n\n"
+                f"Қуйидагилар ишланмади:\n\n{missing_text}")
     return None
 
 
 async def check_patient_datas(event: types.Message | types.CallbackQuery, state: FSMContext) -> str | None:
-    await state.update_data(yakhin=demo_results['yakhin'],
-                            eysenc=demo_results['eysenc'],
-                            leonhard=demo_results['leongard'])
+    await state.update_data(demo_results)
 
     # 1. Message obyektini ajratib olish
     if isinstance(event, types.CallbackQuery):
@@ -81,9 +85,8 @@ async def check_patient_datas(event: types.Message | types.CallbackQuery, state:
         return None
 
     await state.finish()
-    await state.update_data(yakhin=demo_results['yakhin'],
-                            eysenc=demo_results['eysenc'],
-                            leonhard=demo_results['leongard'])
+
+    await state.update_data(demo_results)
 
     full_name = patient['name']
     gender = patient_dict[patient['gender']]
@@ -173,8 +176,9 @@ def get_upcoming_work_dates_with_hours(doctor: list[dict], days_ahead=60) -> dic
 
 consultation_text = ("<b>Консультацияга ёзилиш учун қуйидагиларни бажаришингиз лозим!</b>\n\n"
                      "1. Барча тестларни ишлаш\n"
-                     "2. Шахсий маълумотларни киритиш\n"
-                     "3. Консультация учун 50 фоиз тўловни амалга ошириб чек расмини юбориш"
+                     "2. Сўровномага жавоб бериш\n"
+                     "3. Шахсий маълумотларни киритиш\n"
+                     "4. Консультация учун 50 фоиз тўловни амалга ошириб чек расмини юбориш"
                      )
 
 

@@ -1,7 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from keyboards.inline.consultation_ikbs import sign_up_to_consultation
 from keyboards.inline.user_ibuttons import leotest_ikb
 from loader import leodb, stdb
 from services.error_service import notify_exception_to_admin
@@ -54,7 +53,7 @@ async def leo_result(call: types.CallbackQuery):
     result_text += "\nСўровнома ва шкалаларга таъриф қуйидаги ҳаволада:\n\n" \
                    f"https://telegra.ph/K-Leongardning-harakterologik-s%D1%9Erovnomasi-07-25"
 
-    await call.message.edit_text(text=result_text, reply_markup=sign_up_to_consultation())
+    await call.message.edit_text(text=result_text)
     await leodb.delete_leotemp(telegram_id=call.from_user.id)
 
     # Eng yuqori ballni topamiz

@@ -74,12 +74,12 @@ async def handle_consultation_chek(message: types.Message, state: FSMContext):
     telegram_id = str(message.from_user.id)
     username = message.from_user.username
 
-    if len(data) == 7:
+    if len(data) == 8:
         await handle_add_results(
             state=state, telegram_id=telegram_id, username=username, photo_file_id=photo_file_id, is_patient=True
         )
 
-    elif len(data) == 13:
+    elif len(data) == 14:
         await handle_add_results(
             state=state, telegram_id=telegram_id, username=username, photo_file_id=photo_file_id
         )

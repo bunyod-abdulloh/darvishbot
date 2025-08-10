@@ -6,13 +6,13 @@ from data import config
 from utils.db_api.additional_db import AdditionalDB
 from utils.db_api.admin_db import AdminDB
 from utils.db_api.articles_db import ArticlesDB
-from utils.db_api.ayzenk_db import AyzenkDB
+from utils.db_api.t_eysenc_db import AyzenkDB
 from utils.db_api.create_db_tables import Database
-from utils.db_api.leo_db import LeongardDB
+from utils.db_api.t_leonhard_db import LeongardDB
 from utils.db_api.projects_db import ProjectsDB
 from utils.db_api.statistics_db import StatisticsDB
 from utils.db_api.users_admin_db import UsersDB
-from utils.db_api.yaxin_db import YaxinDB
+from utils.db_api.t_yakhin_db import YaxinDB
 
 bot = Bot(token=config.BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 storage = RedisStorage2(
