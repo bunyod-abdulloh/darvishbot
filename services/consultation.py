@@ -47,7 +47,7 @@ async def missing_test(state: FSMContext) -> str | None:
         'eysenc': 'Айзенк | Темперамент аниқлаш',
         'leonhard': 'Леонгард сўровномаси',
         'yakhin': 'Яхин Менделевич сўровномаси',
-        'questionnaire': 'Оддий сўровнома'
+        'questionnaire': 'Саволнома'
     }
 
     missing = [t for t in tests if t not in data]

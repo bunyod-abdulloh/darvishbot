@@ -4,23 +4,14 @@ from magic_filter import F
 
 from keyboards.default.user_buttons import tests_main_dkb
 from keyboards.inline.consultation_ikbs import select_gender_btn
-
 from loader import dp, udb
+from services.helper_functions import handle_tests_main
 from states.user import UserAnketa
 
 
 @dp.message_handler(F.text == "🧑‍💻 Тестлар | Сўровномалар", state="*")
 async def tests_main_hr(message: types.Message, state: FSMContext):
-    check_user = await udb.check_user(telegram_id=str(message.from_user.id))
-
-    await state.finish()
-
-    if check_user:
-        await message.answer(text=message.text, reply_markup=tests_main_dkb)
-        return
-    else:
-        await message.answer(text="Ёшингизни киритинг\n\n<b>Намуна: 35</b>")
-        await UserAnketa.GET_AGE.set()
+    await handle_tests_main(event=message, state=state)
 
 
 @dp.message_handler(state=UserAnketa.GET_AGE, content_types=types.ContentType.TEXT)

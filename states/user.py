@@ -23,3 +23,7 @@ class UserEditDatas(StatesGroup):
     EDIT_WORK = State()
     EDIT_EEG = State()
     EDIT_PHONE = State()
+
+
+class Patient(StatesGroup):
+    WARN = State()

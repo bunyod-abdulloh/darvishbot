@@ -154,3 +154,18 @@ def show_consultation_dates_keyboard(dates_by_day: dict[str, dict[str, list[str]
         )
     )
     return keyboard
+
+
+def scheduler_patients_ikb():
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    text = {
+        "Тайёрман": "patient_ready",
+        "Хабар бериш": "patient_warn",
+        "Тестларга ўтиш": "patient_go_to_tests"
+    }
+
+    for key, value in text.items():
+        keyboard.insert(
+            InlineKeyboardButton(text=key, callback_data=value)
+        )
+    return keyboard

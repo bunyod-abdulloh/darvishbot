@@ -4,10 +4,11 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from data.config import ADMINS
-from keyboards.default.user_buttons import main_dkb
+from keyboards.default.user_buttons import main_dkb, tests_main_dkb
 from keyboards.inline.admin_ibuttons import check_patient_datas_ikbs
 from loader import udb, adldb, bot
 from services.consultation import week_days, patient_dict
+from states.user import UserAnketa
 
 
 async def check_user_test(call: types.CallbackQuery) -> bool:
@@ -209,6 +210,26 @@ english_symptoms = {
     9: "crying",
     10: "indifference"
 }
+
+
+async def handle_tests_main(event: types.Message | types.CallbackQuery, state: FSMContext):
+    if isinstance(event, types.CallbackQuery):
+        user_id = event.from_user.id
+        message_obj = event.message
+    else:
+        user_id = event.from_user.id
+        message_obj = event
+
+    check_user = await udb.check_user(telegram_id=str(user_id))
+
+    await state.finish()
+
+    if check_user:
+        await message_obj.answer(text="🧑‍💻 Тестлар | Сўровномалар", reply_markup=tests_main_dkb)
+        return
+    else:
+        await message_obj.answer(text="Ёшингизни киритинг\n\n<b>Намуна: 35</b>")
+        await UserAnketa.GET_AGE.set()
 
 
 # import csv
