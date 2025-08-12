@@ -15,7 +15,7 @@ def patient_message_ikbs(telegram_id):
     kb = InlineKeyboardMarkup()
     kb.add(
         InlineKeyboardButton(
-            text="", callback_data=f"admin_message:{telegram_id}"
+            text="Хабар юбориш", callback_data=f"admin_message:{telegram_id}"
         )
     )
     return kb

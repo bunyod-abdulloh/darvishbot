@@ -26,7 +26,7 @@ async def handle_warn_text(message: types.Message, state: FSMContext):
     await state.finish()
     await bot.send_message(
         chat_id=ADMINS[0],
-        text=f"<b>Бемордан хабар:</b> {message.text}\n\n <b>Телеграм ID:</b> <code>{message.from_user.id}</code>\nьььььььььььььь"
+        text=f"<b>Бемордан хабар:</b> {message.text}\n\n <b>Телеграм ID:</b> <code>{message.from_user.id}</code>\n"
              f"Телеграм username: @{message.from_user.username}", reply_markup=patient_message_ikbs(
             telegram_id=message.from_user.id
         )
@@ -49,7 +49,7 @@ async def handle_send_patient_warn(call: types.CallbackQuery, state: FSMContext)
         admin_patient_telegram=patient_telegram
     )
     await call.message.edit_text(
-        text=""
+        text="Хабарингизни киритинг. Хабарингизни текшириб кейин юборинг"
     )
     await AdminStates.SEND_PATIENT_WARN.set()
 
@@ -57,4 +57,10 @@ async def handle_send_patient_warn(call: types.CallbackQuery, state: FSMContext)
 @dp.message_handler(state=AdminStates.SEND_PATIENT_WARN, content_types=types.ContentType.TEXT)
 async def handle_send_patient_warn_st(message: types.Message, state: FSMContext):
     patient_telegram = (await state.get_data()).get('admin_patient_telegram')
-
+    await bot.send_message(
+        chat_id=patient_telegram, text=message.text
+    )
+    await message.answer(
+        text="Хабарингиз беморга юборилди!"
+    )
+    await state.finish()
