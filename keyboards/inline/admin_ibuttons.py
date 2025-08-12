@@ -1,14 +1,24 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
-def check_patient_datas_ikbs(patient_id):
+def check_patient_datas_ikbs(patient_telegram):
     btn = InlineKeyboardMarkup()
     btn.add(
         InlineKeyboardButton(
-            text="❌ Рад қилиш", callback_data=f"admin_cancel:{patient_id}"
+            text="❌ Рад қилиш", callback_data=f"admin_cancel:{patient_telegram}"
         )
     )
     return btn
+
+
+def patient_message_ikbs(telegram_id):
+    kb = InlineKeyboardMarkup()
+    kb.add(
+        InlineKeyboardButton(
+            text="", callback_data=f"admin_message:{telegram_id}"
+        )
+    )
+    return kb
 
 
 def are_you_sure_markup():

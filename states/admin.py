@@ -10,3 +10,4 @@ class AdminStates(StatesGroup):
     SEND_MEDIA_TO_GROUPS = State()
     СANCEL_CONSULTATION = State()
     DELETE_USER_DATAS = State()
+    SEND_PATIENT_WARN = State()

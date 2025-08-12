@@ -38,8 +38,8 @@ class AdditionalDB:
 
         return patient_id
 
-    async def delete_patient_datas(self, patient_id):
-        await self.db.execute("""DELETE FROM clinic_patient WHERE id = $1""", patient_id, execute=True)
+    async def delete_patient_datas(self, patient_telegram):
+        await self.db.execute("""DELETE FROM clinic_patient WHERE tg_id = $1""", patient_telegram, execute=True)
 
     async def set_fullname(self, fullname, telegram_id):
         sql = """UPDATE clinic_patient SET name = $1 WHERE tg_id = $2"""

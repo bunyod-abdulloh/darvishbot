@@ -9,8 +9,8 @@ from states.admin import AdminStates
 
 @dp.callback_query_handler(F.data.startswith("admin_cancel:"), state="*")
 async def handle_check_consultation(call: types.CallbackQuery, state: FSMContext):
-    patient_id = call.data.split(":")[1]
-    await state.update_data(admin_patient_id=int(patient_id))
+    patient_telegram = call.data.split(":")[1]
+    await state.update_data(admin_patient_telegram=str(patient_telegram))
 
     await call.message.answer(
         text="Рад этилиш сабабини киритинг"
@@ -20,12 +20,11 @@ async def handle_check_consultation(call: types.CallbackQuery, state: FSMContext
 
 @dp.message_handler(state=AdminStates.СANCEL_CONSULTATION, content_types=types.ContentType.TEXT)
 async def handle_check_consultation_st(message: types.Message, state: FSMContext):
-    patient_id = (await state.get_data()).get("admin_patient_id")
-    patient = await adldb.get_patient_by_id(patient_id=patient_id)
+    patient_telegram = (await state.get_data()).get("admin_patient_telegram")
 
     try:
         await bot.send_message(
-            chat_id=patient['tg_id'],
+            chat_id=patient_telegram,
             text=f"Консультация учун сўровингиз рад этилди!\n\nСабаб:\n\n<b>{message.text}</b>"
         )
     except Exception as err:
@@ -43,8 +42,8 @@ async def handle_check_consultation_st(message: types.Message, state: FSMContext
 @dp.callback_query_handler(state=AdminStates.DELETE_USER_DATAS)
 async def handle_delete_user_datas(call: types.CallbackQuery, state: FSMContext):
     if call.data == "yes":
-        patient_id = (await state.get_data()).get("admin_patient_id")
-        await adldb.delete_patient_datas(patient_id=patient_id)
+        patient_telegram = (await state.get_data()).get("admin_patient_telegram")
+        await adldb.delete_patient_datas(patient_telegram=patient_telegram)
         await call.message.edit_text(
             text="Маълумотлар ўчирилди!"
         )

@@ -153,7 +153,7 @@ async def notify_admin(photo_file_id, full_name, gender, age, marital_status,
                 f"<b>Телеграм ID:</b> <code>{telegram_id}</code>\n"
                 f"<b>Телеграм username:</b>  @{username}\n\n"
                 f"<b>Тестлар натижасини CRMдан кўришингиз мумкин!</b>",
-        reply_markup=check_patient_datas_ikbs(patient_id=patient_id)
+        reply_markup=check_patient_datas_ikbs(patient_telegram=telegram_id)
     )
 
     # Send message to patient
