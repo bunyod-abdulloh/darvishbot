@@ -17,7 +17,7 @@ async def tests_main_hr(message: types.Message, state: FSMContext):
 @dp.message_handler(state=UserAnketa.GET_AGE, content_types=types.ContentType.TEXT)
 async def handle_get_age(message: types.Message, state: FSMContext):
     if message.text.isdigit():
-        await state.update_data(user_age=int(message.text))
+        await state.update_data(user_age=str(message.text))
         await message.answer(
             text="Жинсингизни танланг", reply_markup=select_gender_btn()
         )

@@ -17,11 +17,11 @@ class AdditionalDB:
     async def add_patient(self, telegram_id, name, phone, marital_status, absence_children, work, result_eeg):
         sql = """
             INSERT INTO clinic_patient (
-                tg_id, name, phone, gender, age, marital_status, absence_children, work, result_eeg
+                tg_id, name, phone, gender, age, marital_status, absence_children, work, result_eeg, company_id
             )
             SELECT 
                 $1::VARCHAR, $2::VARCHAR, $3::VARCHAR, gender, age,
-                $4::VARCHAR, $5::VARCHAR, $6::VARCHAR, $7::VARCHAR
+                $4::VARCHAR, $5::VARCHAR, $6::VARCHAR, $7::VARCHAR, 1
             FROM bot_users
             WHERE telegram_id = $1::VARCHAR
             RETURNING id

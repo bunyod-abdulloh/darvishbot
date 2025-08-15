@@ -10,13 +10,11 @@ from services.scheduler import scheduler_message_to_patients
 
 @dp.message_handler(F.text == "Саволнома", state="*")
 async def start_symptoms(message: types.Message):
-    await scheduler_message_to_patients()
-
-    # symptom_id = 1
-    # await message.answer(
-    #     f"Сизда {uzbek_symptoms[symptom_id]} борми?",
-    #     reply_markup=symptom_keyboard(symptom_id)
-    # )
+    symptom_id = 1
+    await message.answer(
+        f"Сизда {uzbek_symptoms[symptom_id]} борми?",
+        reply_markup=symptom_keyboard(symptom_id)
+    )
 
 
 @dp.callback_query_handler(F.data.startswith("symptom:"), state="*")
